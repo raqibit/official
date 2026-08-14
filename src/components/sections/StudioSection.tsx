@@ -1,0 +1,176 @@
+'use client'
+
+/**
+ * StudioSection
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Showcases the microsoldering studio side of the business.
+ * Left column: amber-toned photo1 with duotone blend + corner frames.
+ * Right column: heading, prolific description, stat grid, services list.
+ */
+
+import { motion } from 'framer-motion'
+import Image from 'next/image'
+
+// ── Studio stats ──────────────────────────────────────────────────────────────
+const STATS = [
+  { value: '40+', label: 'Successful Repairs' },
+  { value: '3yrs', label: 'Precision Experience' },
+  { value: '100%', label: 'Data Recovery Rate' },
+]
+
+// ── Services list ─────────────────────────────────────────────────────────────
+const SERVICES = [
+  'iPhone & MacBook Logic Board Repair',
+  'BGA Chip Reballing & Replacement',
+  'Water Damage Diagnosis & Recovery',
+  'NAND Flash Data Recovery',
+  'Right-to-Repair Advocacy',
+]
+
+export function StudioSection() {
+  return (
+    <section id="studio" className="relative bg-[#080808] py-28 sm:py-36 overflow-hidden">
+      {/* Ambient amber glow — top-right */}
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[40vw] h-[60vh] bg-amber-500 opacity-[0.04] rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-12 xl:px-20">
+
+        {/* Section label */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex items-center gap-4 mb-16"
+        >
+          <span className="block h-px w-8 bg-amber-500" />
+          <span
+            className="font-mono text-xs tracking-[0.2em] uppercase text-amber-600"
+            style={{ fontFamily: 'var(--font-mono)' }}
+          >
+            The Studio
+          </span>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+          {/* ── LEFT — Amber-tinted studio photo ─────────────── */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative h-[420px] lg:h-[520px] w-full order-2 lg:order-1 rounded-2xl overflow-hidden"
+          >
+            {/* Corner frame markers */}
+            <span className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-amber-500 opacity-50 z-20" />
+            <span className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-amber-500 opacity-50 z-20" />
+            <span className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-amber-500 opacity-50 z-20" />
+            <span className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-amber-500 opacity-50 z-20" />
+
+            {/* Floating label badge */}
+            <span
+              className="absolute top-4 left-1/2 -translate-x-1/2 font-mono text-[10px] tracking-[0.25em] uppercase text-amber-400 opacity-90 z-20 bg-[#080808]/60 px-4 py-1.5 rounded-full backdrop-blur-md border border-amber-500/20"
+              style={{ fontFamily: 'var(--font-mono)' }}
+            >
+              MICROSOLDERING STATION
+            </span>
+
+            {/* Bottom gradient — blends photo into section background */}
+            <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#080808] via-[#080808]/40 to-transparent" />
+
+            {/* Amber duotone blend layers */}
+            <div className="absolute inset-0 z-10 bg-amber-500 mix-blend-multiply opacity-50" />
+            <div className="absolute inset-0 z-10 bg-amber-500 mix-blend-color opacity-40" />
+
+            {/* Studio photo — grayscale + contrast for duotone to work correctly */}
+            <Image
+              src="/images/studio/photo1.jpg"
+              alt="Microsoldering Studio — Roqeeb Ismail"
+              fill
+              loading="lazy"
+              className="object-cover opacity-90 grayscale contrast-125 transition-transform duration-1000 hover:scale-105"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
+          </motion.div>
+
+          {/* ── RIGHT — Copy + stats + services ──────────────── */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="order-1 lg:order-2"
+          >
+            <h2
+              className="text-4xl sm:text-5xl font-bold text-white leading-tight mb-4"
+              style={{ fontFamily: 'var(--font-sans)' }}
+            >
+              Precision at
+              <br />
+              <span className="text-amber-400 text-glow-amber">400°C.</span>
+            </h2>
+
+            {/* Tagline — italicised display font */}
+            <p
+              className="text-xl italic text-gray-500 mb-8"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              <em>Beyond software engineering, I operate an advanced microsoldering laboratory.</em>
+            </p>
+
+            {/* Body copy */}
+            <p
+              className="text-sm text-gray-500 leading-relaxed mb-10 max-w-md"
+              style={{ fontFamily: 'var(--font-sans)' }}
+            >
+              I specialize in intricate logic board restorations for iPhones and MacBooks.
+              This discipline demands extreme precision—performing deep fault diagnostics via
+              advanced schematics, executing component-level rework under a trinocular microscope,
+              and conducting mission-critical data recovery on severely water-damaged or physically
+              compromised devices. I bring the exact same rigorous problem-solving from the
+              codebase directly to the motherboard.
+            </p>
+
+            {/* Stats grid */}
+            <div className="grid grid-cols-3 gap-0 border border-amber-500/15 mb-12">
+              {STATS.map((stat, i) => (
+                <div
+                  key={stat.label}
+                  className={`p-6 text-center ${i < STATS.length - 1 ? 'border-r border-amber-500/15' : ''}`}
+                >
+                  <div
+                    className="text-2xl font-bold text-amber-400 text-glow-amber mb-1"
+                    style={{ fontFamily: 'var(--font-mono)' }}
+                  >
+                    {stat.value}
+                  </div>
+                  <div
+                    className="text-[10px] tracking-widest uppercase text-gray-600"
+                    style={{ fontFamily: 'var(--font-mono)' }}
+                  >
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Services list */}
+            <ul className="space-y-3">
+              {SERVICES.map((service) => (
+                <li
+                  key={service}
+                  className="flex items-center gap-3 text-sm text-gray-400"
+                  style={{ fontFamily: 'var(--font-sans)' }}
+                >
+                  <span className="block w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                  {service}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+        </div>
+      </div>
+    </section>
+  )
+}
