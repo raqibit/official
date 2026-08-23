@@ -22,7 +22,7 @@ export function SkillsSection() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
           className="flex items-center gap-4 mb-16"
         >
@@ -39,18 +39,18 @@ export function SkillsSection() {
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.7 }}
           className="text-4xl sm:text-5xl font-bold text-white mb-4 leading-tight"
           style={{ fontFamily: 'var(--font-sans)' }}
         >
-          Three disciplines.
+          Disciplines
           <br />
           <span
             className="italic font-normal text-gray-500"
             style={{ fontFamily: 'var(--font-display)' }}
           >
-            One rare combination.
+            The rare combination.
           </span>
         </motion.h2>
 
@@ -62,7 +62,7 @@ export function SkillsSection() {
               key={d.number}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.7, delay: i * 0.15 }}
               className="group relative flex flex-col bg-[#0a0a0a] p-10 lg:p-12 hover:bg-[#0f0f0f] transition-colors duration-500"
             >

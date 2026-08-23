@@ -1,29 +1,34 @@
 'use client'
 
-/**
- * HeroSection
- * ─────────────────────────────────────────────────────────────────────────────
- * Homepage hero: left column has name, tagline, stats, CTAs, socials.
- * Right column shows a toggleable GlassTerminal (default) or AnimatedCodeEditor.
- *
- * Animation: framer-motion stagger container/item pattern for the left column.
- */
-
 import Link from 'next/link'
-import { useState } from 'react'
 import { motion, type Variants } from 'framer-motion'
-
+import { useState } from 'react'
+import { ContactModal } from '@/components/ui/ContactModal'
 import {
   GitHubIcon,
   InstagramIcon,
   LinkedInIcon,
   XIcon,
 } from '@/components/layout/SocialIcons'
-import { Container } from '@/components/layout/Container'
-import { GlassTerminal } from '@/components/ui/GlassTerminal'
-import { AnimatedCodeEditor } from '@/components/ui/AnimatedCodeEditor'
 
-// ── Social link pill ──────────────────────────────────────────────────────────
+const container: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.15 },
+  },
+}
+
+const item: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
+}
+
+const imageVariant: Variants = {
+  hidden: { opacity: 0, scale: 1.04 },
+  show: { opacity: 1, scale: 1, transition: { duration: 1.2, ease: [0.22, 1, 0.36, 1] } },
+}
+
 function SocialLink({
   icon: Icon,
   href,
@@ -41,171 +46,159 @@ function SocialLink({
       target="_blank"
       rel="noopener noreferrer"
       data-cursor="VIEW"
-      className="group relative flex items-center justify-center w-9 h-9 rounded-full border border-white/[0.08] hover:border-[#00e5ff] hover:bg-[#00e5ff]/10 transition-all duration-300"
+      className="group flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.07] hover:border-white/20 transition-colors duration-300"
     >
-      <Icon className="h-4 w-4 fill-gray-500 transition group-hover:fill-[#00e5ff]" />
+      <Icon className="h-3.5 w-3.5 fill-gray-600 transition group-hover:fill-white" />
     </Link>
   )
 }
 
-// ── Framer Motion variants ─────────────────────────────────────────────────────
-const container: Variants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12, delayChildren: 0.2 },
-  },
-}
-
-const item: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-  },
-}
-
-// ── Hero stats ─────────────────────────────────────────────────────────────────
-const STATS = [
-  { value: '3+', label: 'Years Engineering' },
-  { value: '40+', label: 'Features Shipped' },
-]
-
-// ── Toggle tabs ────────────────────────────────────────────────────────────────
-const TABS = ['Terminal', 'Code'] as const
-type Tab = (typeof TABS)[number]
-
-// ── Component ─────────────────────────────────────────────────────────────────
 export function HeroSection() {
-  // 'Terminal' = GlassTerminal (default), 'Code' = AnimatedCodeEditor
-  const [activeTab, setActiveTab] = useState<Tab>('Terminal')
+  const [isContactOpen, setIsContactOpen] = useState(false)
 
   return (
-    <Container className="mt-9 sm:mt-14">
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_48%] gap-12 lg:gap-8 py-12">
+    <section className="relative min-h-[calc(100vh-80px)] flex items-center overflow-hidden">
+      {/* Subtle radial glow behind content */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-1/4 top-32 w-[600px] h-[600px] rounded-full opacity-[0.04]"
+        style={{ background: 'radial-gradient(circle, #00e5ff 0%, transparent 70%)' }}
+      />
 
-        {/* ── LEFT COLUMN ──────────────────────────────────── */}
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate="show"
-          className="flex flex-col gap-6 md:pr-8 lg:pr-16"
-        >
-          {/* Name */}
-          <motion.div variants={item}>
-            <h1
-              className="text-4xl sm:text-5xl xl:text-6xl font-bold tracking-tight text-white"
-              style={{ fontWeight: 700 }}
-            >
-              Roqeeb
-              <br />
-              <span className="text-[#00e5ff] text-glow-cyan">Ismail.</span>
-            </h1>
-          </motion.div>
+      <div className="relative mx-auto max-w-[1400px] px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
 
-          {/* Tagline */}
-          <motion.div variants={item}>
-            <p className="text-xl sm:text-2xl text-gray-400 italic leading-snug font-display">
-              <em>Where software meets&nbsp;the&nbsp;silicon.</em>
-            </p>
-          </motion.div>
+          {/* ── LEFT: Text content ── */}
+          <motion.div
+            variants={container}
+            initial="hidden"
+            animate="show"
+            className="relative w-full lg:max-w-xl lg:shrink-0 xl:max-w-2xl flex flex-col gap-0"
+          >
+            <motion.div variants={item} className="flex items-center gap-4 mb-8">
+              <span className="block h-px w-10 bg-white/20" />
+              <p className="text-xs text-gray-400 font-mono tracking-[0.2em] uppercase">
+                Roqeeb Ismail
+              </p>
+            </motion.div>
 
-          {/* Descriptor */}
-          <motion.div variants={item}>
-            <p className="max-w-lg text-base text-gray-500 leading-relaxed">
-              Frontend engineer building high-performance interfaces.
-              Visual designer crafting experiences that feel alive.
-              Microsoldering specialist repairing circuits at the component level.
-            </p>
-          </motion.div>
+            <motion.header variants={item} className="mb-8">
+              <h1 className="text-[clamp(3rem,7vw,5rem)] font-light leading-[1] tracking-tighter text-white">
+                Software<br />
+                &nbsp; Engineer<span className="text-[#00e5ff]">.</span>
+              </h1>
+            </motion.header>
 
-          {/* Stats row */}
-          <motion.div variants={item} className="flex flex-wrap gap-8 pt-2">
-            {STATS.map((stat) => (
-              <div key={stat.label}>
-                <div
-                  className="text-3xl font-bold text-glow-cyan font-mono"
-                  style={{ color: '#00e5ff' }}
+            <motion.div variants={item} className="mb-12">
+              <p className="text-lg text-gray-400 font-light leading-relaxed max-w-xl">
+                Architecting resilient backend systems and building high-performance, 
+                pixel-perfect interfaces for the modern web.
+              </p>
+            </motion.div>
+
+            <motion.div variants={item} className="flex flex-wrap items-center gap-6 mb-16">
+              <Link
+                href="/projects"
+                data-cursor="VIEW"
+                className="group inline-flex items-center gap-3 px-8 py-4 text-xs font-semibold tracking-[0.15em] uppercase text-black bg-white hover:bg-[#00e5ff] transition-all duration-500"
+              >
+                View My Work
+                <svg
+                  className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
                 >
-                  {stat.value}
-                </div>
-                <div className="text-xs text-gray-600 tracking-widest uppercase mt-1 font-mono">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </motion.div>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
+              </Link>
 
-          {/* CTAs */}
-          <motion.div variants={item} className="flex flex-wrap items-center gap-4 pt-2">
-            <Link
-              href="/projects"
-              data-cursor="VIEW"
-              className="group inline-flex items-center gap-2 rounded-none border border-[#00e5ff] bg-transparent px-7 py-3.5 text-sm font-semibold text-[#00e5ff] transition-all duration-300 hover:bg-[#00e5ff] hover:text-black"
-              style={{ letterSpacing: '0.05em' }}
-            >
-              VIEW MY WORK
-              <svg
-                className="h-4 w-4 transition-transform group-hover:translate-x-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-              </svg>
-            </Link>
-
-            <Link
-              href="/about"
-              data-cursor="VIEW"
-              className="inline-flex items-center gap-2 px-7 py-3.5 text-sm font-semibold text-gray-400 transition hover:text-white"
-              style={{ letterSpacing: '0.05em' }}
-            >
-              ABOUT ME
-            </Link>
-          </motion.div>
-
-          {/* Social links */}
-          <motion.div variants={item} className="flex gap-5 pt-2">
-            <SocialLink href="https://x.com/prime3it" icon={XIcon} label="X / Twitter" />
-            <SocialLink href="https://instagram.com/rq_ismail" icon={InstagramIcon} label="Instagram" />
-            <SocialLink href="https://github.com/rq-ismail" icon={GitHubIcon} label="GitHub" />
-            <SocialLink href="https://linkedin.com/in/roqeebismail" icon={LinkedInIcon} label="LinkedIn" />
-          </motion.div>
-        </motion.div>
-
-        {/* ── RIGHT COLUMN — Terminal / Code editor ────────── */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="relative w-full flex flex-col items-center justify-center gap-4 lg:pl-6"
-        >
-          {/* Toggle pill: Terminal ↔ Code */}
-          <div className="flex items-center gap-1 self-end rounded-full border border-white/[0.06] bg-white/[0.02] p-0.5 backdrop-blur-md">
-            {TABS.map((tab) => (
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                data-cursor=""
-                className={`px-4 py-1.5 rounded-full font-mono text-[10px] tracking-widest uppercase transition-all ${
-                  activeTab === tab
-                    ? 'bg-[#00e5ff] text-black font-bold'
-                    : 'text-zinc-600 hover:text-zinc-400'
-                }`}
+                onClick={() => setIsContactOpen(true)}
+                data-cursor="VIEW"
+                className="inline-flex items-center gap-3 px-8 py-4 text-xs font-semibold tracking-[0.15em] uppercase text-gray-400 border border-white/[0.05] hover:border-white/20 hover:text-white transition-all duration-500"
               >
-                {tab}
+                Contact Me
               </button>
-            ))}
-          </div>
+            </motion.div>
 
-          {/* Conditional widget render */}
-          {activeTab === 'Terminal' ? <GlassTerminal /> : <AnimatedCodeEditor />}
-        </motion.div>
+            <motion.div variants={item} className="flex items-center gap-5">
+              <SocialLink href="https://x.com/prime3it" icon={XIcon} label="X / Twitter" />
+              <SocialLink href="https://instagram.com/rq_ismail" icon={InstagramIcon} label="Instagram" />
+              <SocialLink href="https://github.com/rq-ismail" icon={GitHubIcon} label="GitHub" />
+              <SocialLink href="https://linkedin.com/in/roqeebismail" icon={LinkedInIcon} label="LinkedIn" />
+            </motion.div>
 
+            {/* Stat card — years & projects */}
+            <motion.div
+              variants={item}
+              className="mt-16 flex items-center gap-10"
+            >
+              <div className="flex flex-col gap-1">
+                <div className="text-3xl font-light text-white tracking-tighter">3+</div>
+                <div className="text-[10px] tracking-[0.25em] text-gray-500 uppercase">Years Eng.</div>
+              </div>
+              <div className="h-10 w-px bg-white/[0.05]" />
+              <div className="flex flex-col gap-1">
+                <div className="text-3xl font-light text-white tracking-tighter">40+</div>
+                <div className="text-[10px] tracking-[0.25em] text-gray-500 uppercase">Features</div>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* ── RIGHT: Staggered Image Grid ── */}
+          <motion.div
+            variants={imageVariant}
+            initial="hidden"
+            animate="show"
+            className="mt-14 flex justify-end gap-6 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0 relative"
+          >
+            {/* Floating Contact Link */}
+            <div className="absolute -top-12 right-0 hidden lg:block">
+              <button
+                onClick={() => setIsContactOpen(true)}
+                className="group flex items-center gap-2 text-[10px] font-mono tracking-[0.2em] uppercase text-gray-500 hover:text-white transition-colors"
+              >
+                Contact Me
+                <svg className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="ml-auto w-44 flex-none space-y-6 pt-32 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-0 xl:pt-80">
+              <div className="relative group overflow-hidden rounded-xl">
+                <img src="/images/hero_software.jpg" alt="" className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out" />
+                <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
+              </div>
+            </div>
+            <div className="mr-auto w-44 flex-none space-y-6 sm:mr-0 sm:pt-52 lg:pt-36">
+              <div className="relative group overflow-hidden rounded-xl">
+                <img src="/images/hero_hardware.jpg" alt="" className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out" />
+                <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
+              </div>
+              <div className="relative group overflow-hidden rounded-xl">
+                <img src="/images/hero_design.jpg" alt="" className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out" />
+                <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
+              </div>
+            </div>
+            <div className="w-44 flex-none space-y-6 pt-32 sm:pt-0">
+              <div className="relative group overflow-hidden rounded-xl">
+                <img src="/images/hero_workspace.jpg" alt="" className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out" />
+                <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
+              </div>
+              <div className="relative group overflow-hidden rounded-xl">
+                <img src="/images/hero_ai.jpg" alt="" className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out" />
+                <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
-    </Container>
+
+      {/* ── Contact Modal Overlay ── */}
+      <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
+    </section>
   )
 }

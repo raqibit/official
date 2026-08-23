@@ -19,8 +19,9 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ProjectDetailOverlay } from '@/components/overlays/ProjectDetailOverlay'
+import { PROJECTS } from '@/data/projects'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type ProjectSummary = {
@@ -45,8 +46,8 @@ const PLACEHOLDER_PROJECTS: ProjectSummary[] = [
   },
   {
     id: 'ph2',
-    name: 'Hardware Engine',
-    tagline: 'Real-time logic board diagnostics tool for microsoldering specialists.',
+    name: 'Analytics Engine',
+    tagline: 'Real-time analytics engine and dashboard for enterprise infrastructure.',
     accentColor: '#7c3aed',
     techStack: ['React', 'WebGL', 'Three.js'],
     videoUrl: '',
@@ -84,7 +85,7 @@ function SectionHeader({ showAllLink }: { showAllLink?: boolean }) {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-100px" }}
           className="flex items-center gap-4 mb-4"
         >
           <span className="block h-px w-8 bg-gray-700" />
@@ -98,7 +99,7 @@ function SectionHeader({ showAllLink }: { showAllLink?: boolean }) {
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-100px" }}
           className="text-4xl sm:text-5xl font-bold text-white"
           style={{ fontFamily: 'var(--font-sans)' }}
         >
@@ -144,7 +145,7 @@ function ProjectCard({
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.6, delay: index * 0.08 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -235,20 +236,11 @@ function ProjectCard({
 
 // ── Main component ────────────────────────────────────────────────────────────
 export function FeaturedProjects() {
-  const [projects, setProjects] = useState<ProjectSummary[]>([])
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const router = useRouter()
 
-  useEffect(() => {
-    // Use AbortController to cancel fetch on unmount (prevents memory leaks)
-    const controller = new AbortController()
-
-    fetch('/api/projects', { signal: controller.signal })
-      .then((res) => res.json())
-      .then((data) => setProjects(data.slice(0, 5)))
-      .catch(() => {/* silently ignore abort errors */})
-
-    return () => controller.abort()
-  }, [])
+  // Use the static projects data directly
+  // We grab the first 3 projects to feature on the homepage
+  const projects = PROJECTS.slice(0, 3)
 
   // ── Empty state: show placeholder bento ───────────────────────────────────
   if (projects.length === 0) {
@@ -267,51 +259,41 @@ export function FeaturedProjects() {
   }
 
   // ── Live data: bento layout ────────────────────────────────────────────────
-  const [featured, ...rest] = projects
-  const mediums = rest.slice(0, 2)
-  const smalls = rest.slice(2)
+  const p1 = projects[0]
+  const p2 = projects[1]
+  const p3 = projects[2]
 
   return (
     <section id="projects" className="py-28 sm:py-36 bg-[#0a0a0a]">
-      {/* Overlay rendered outside grid to avoid layout impact */}
-      <ProjectDetailOverlay
-        projectId={selectedId}
-        onClose={() => setSelectedId(null)}
-      />
-
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12 xl:px-20">
         <SectionHeader showAllLink />
 
-        {/* Bento grid */}
+        {/* Bento grid for 3 items */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-white/[0.04]">
-          {featured && (
+          {p1 && (
             <ProjectCard
-              project={featured}
+              project={p1}
               className="lg:col-span-3"
               index={0}
-              onClick={() => setSelectedId(featured.id)}
+              onClick={() => router.push('/projects')}
             />
           )}
-
-          {mediums.map((p, i) => (
+          {p2 && (
             <ProjectCard
-              key={p.id}
-              project={p}
+              project={p2}
               className="lg:col-span-1"
-              index={i + 1}
-              onClick={() => setSelectedId(p.id)}
+              index={1}
+              onClick={() => router.push('/projects')}
             />
-          ))}
-
-          {smalls.map((p, i) => (
+          )}
+          {p3 && (
             <ProjectCard
-              key={p.id}
-              project={p}
-              className=""
-              index={mediums.length + i + 1}
-              onClick={() => setSelectedId(p.id)}
+              project={p3}
+              className="lg:col-span-2"
+              index={2}
+              onClick={() => router.push('/projects')}
             />
-          ))}
+          )}
         </div>
       </div>
     </section>

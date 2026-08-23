@@ -6,6 +6,14 @@ const nextConfig = {
   outputFileTracingIncludes: {
     '/articles/*': ['./src/app/articles/**/*.mdx'],
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'nexter.netlify.app',
+      },
+    ],
+  },
 }
 
 const withMDX = nextMDX({

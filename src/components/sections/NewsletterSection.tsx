@@ -11,9 +11,17 @@ export function NewsletterSection() {
     e.preventDefault()
     if (!email || !email.includes('@')) return
     setStatus('loading')
-    // Simulate API call — replace with Resend/Mailchimp later
-    await new Promise(r => setTimeout(r, 900))
-    setStatus('success')
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      if (!res.ok) throw new Error('Failed')
+      setStatus('success')
+    } catch {
+      setStatus('error')
+    }
   }
 
   return (
@@ -27,7 +35,7 @@ export function NewsletterSection() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-100px" }}
           className="flex items-center justify-center gap-3 mb-6"
         >
           <span className="block h-px w-8 bg-[#00e5ff]" />
@@ -38,7 +46,7 @@ export function NewsletterSection() {
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-100px" }}
           transition={{ delay: 0.1 }}
           className="text-3xl sm:text-4xl font-bold text-white mb-4 leading-tight"
         >
@@ -48,7 +56,7 @@ export function NewsletterSection() {
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-100px" }}
           transition={{ delay: 0.2 }}
           className="text-gray-500 text-sm leading-relaxed mb-10 max-w-md mx-auto"
         >

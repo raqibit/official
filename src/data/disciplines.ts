@@ -16,12 +16,12 @@ export const disciplines: Discipline[] = [
   {
     number: '01',
     title: 'Software Engineering',
-    tagline: 'Interfaces that feel alive.',
+    tagline: 'Modern, scalable web development.',
     color: '#00e5ff',
     colorDim: 'rgba(0,229,255,0.08)',
     colorBorder: 'rgba(0,229,255,0.25)',
-    skills: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Node.js', 'REST APIs', 'PostgreSQL', 'Prisma'],
-    desc: 'I build high-performance web applications with pixel-perfect attention to motion and interaction design.',
+    skills: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Node.js', 'Express', 'Prompt Engineering', 'LLM Integration', 'Agentic AI / RAG', 'Architecture'],
+    desc: 'I build high-performance, full-stack web applications using the modern ecosystem. By synthesizing traditional engineering with AI thread skills — like prompt engineering and agentic workflows — I create intelligent, scalable solutions.',
   },
   {
     number: '02',
@@ -36,11 +36,11 @@ export const disciplines: Discipline[] = [
   {
     number: '03',
     title: 'Microsoldering & Hardware',
-    tagline: 'Precision at 400°C.',
+    tagline: 'Precision under the scope.',
     color: '#f59e0b',
     colorDim: 'rgba(245,158,11,0.08)',
     colorBorder: 'rgba(245,158,11,0.25)',
-    skills: ['Board-Level Repair', 'Data Recovery', 'iPhone Logic Boards', 'MacBook Repair', 'BGA Reballing', 'Schematics'],
-    desc: 'From dead logic boards to corrupted chips — I diagnose and repair hardware at the component level.',
+    skills: ['Logic Board Repair', 'Data Recovery', 'BGA Reballing', 'Schematic Reading', 'Trace Repair', 'Troubleshooting'],
+    desc: 'Beyond code, I repair complex logic board faults at the component level on iPhones and MacBooks, requiring extreme precision.',
   },
 ]

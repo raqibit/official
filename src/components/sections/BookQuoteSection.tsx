@@ -1,18 +1,18 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { NewsletterSection } from './NewsletterSection'
+import { MiniCalendar } from '../ui/booking/MiniCalendar'
+import { GlassCard, GlassInput } from '../ui/booking/GlassForms'
+import { StepBar, type BookingStep } from '../ui/booking/StepBar'
 
-// ── Types ─────────────────────────────────────────────────────────────────────
-type BookingStep = 'date' | 'time' | 'details' | 'confirm'
+// ── Types & Constants ─────────────────────────────────────────────────────────
 
 const PROJECT_TYPES = [
   'Web Application',
   'Mobile App',
   'UI / Design System',
-  'Microsoldering Repair',
-  'Data Recovery',
   'Consultation',
   'Other',
 ]
@@ -23,197 +23,13 @@ const TIME_SLOTS = [
   { id: 'eve', label: '5:00 PM', sub: 'Evening' },
 ]
 
-// Days of week that are available (Mon–Sat, not Sun)
-const BLOCKED_DAYS = [0] // Sunday
-
-// ── Calendar ──────────────────────────────────────────────────────────────────
-function MiniCalendar({
-  selected,
-  onSelect,
-}: {
-  selected: Date | null
-  onSelect: (d: Date) => void
-}) {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-
-  const [viewDate, setViewDate] = useState(() => {
-    const d = new Date()
-    d.setDate(1)
-    return d
-  })
-
-  const year = viewDate.getFullYear()
-  const month = viewDate.getMonth()
-
-  const firstDay = new Date(year, month, 1).getDay()
-  const daysInMonth = new Date(year, month + 1, 0).getDate()
-
-  const monthName = viewDate.toLocaleString('default', { month: 'long' })
-
-  const cells = useMemo(() => {
-    const arr: (Date | null)[] = Array(firstDay).fill(null)
-    for (let d = 1; d <= daysInMonth; d++) {
-      arr.push(new Date(year, month, d))
-    }
-    while (arr.length % 7 !== 0) arr.push(null)
-    return arr
-  }, [year, month, firstDay, daysInMonth])
-
-  const prevMonth = () => setViewDate(new Date(year, month - 1, 1))
-  const nextMonth = () => setViewDate(new Date(year, month + 1, 1))
-
-  const isDisabled = (d: Date) =>
-    d < today || BLOCKED_DAYS.includes(d.getDay())
-
-  const isSelected = (d: Date) =>
-    selected?.toDateString() === d.toDateString()
-
-  const isToday = (d: Date) => d.toDateString() === today.toDateString()
-
-  return (
-    <div className="w-full">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <button
-          onClick={prevMonth}
-          className="w-7 h-7 rounded-full border border-white/10 flex items-center justify-center text-zinc-500 hover:text-white hover:border-white/20 transition-all"
-        >
-          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-        </button>
-        <span className="font-mono text-xs tracking-widest text-white uppercase">
-          {monthName} {year}
-        </span>
-        <button
-          onClick={nextMonth}
-          className="w-7 h-7 rounded-full border border-white/10 flex items-center justify-center text-zinc-500 hover:text-white hover:border-white/20 transition-all"
-        >
-          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-        </button>
-      </div>
-
-      {/* Day names */}
-      <div className="grid grid-cols-7 mb-1">
-        {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(d => (
-          <div key={d} className="text-center font-mono text-[10px] text-zinc-600 py-1">{d}</div>
-        ))}
-      </div>
-
-      {/* Cells */}
-      <div className="grid grid-cols-7 gap-0.5">
-        {cells.map((d, i) => {
-          if (!d) return <div key={i} />
-          const disabled = isDisabled(d)
-          const sel = isSelected(d)
-          const tod = isToday(d)
-          return (
-            <button
-              key={i}
-              disabled={disabled}
-              onClick={() => !disabled && onSelect(d)}
-              className={`
-                aspect-square w-full flex items-center justify-center rounded-lg font-mono text-xs transition-all
-                ${disabled ? 'text-zinc-800 cursor-not-allowed' : 'cursor-pointer hover:bg-white/[0.07]'}
-                ${sel ? 'bg-[#00e5ff] text-black font-bold shadow-[0_0_12px_rgba(0,229,255,0.4)]' : ''}
-                ${tod && !sel ? 'text-[#00e5ff] border border-[#00e5ff]/30' : ''}
-                ${!disabled && !sel && !tod ? 'text-zinc-400' : ''}
-              `}
-            >
-              {d.getDate()}
-            </button>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
-// ── Glass wrapper ─────────────────────────────────────────────────────────────
-function GlassCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div
-      className={`relative rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl overflow-hidden ${className}`}
-      style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.05)' }}
-    >
-      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent" />
-      {children}
-    </div>
-  )
-}
-
-// ── Step indicator ────────────────────────────────────────────────────────────
-function StepBar({ current }: { current: BookingStep }) {
-  const steps: { id: BookingStep; label: string }[] = [
-    { id: 'date', label: 'Date' },
-    { id: 'time', label: 'Time' },
-    { id: 'details', label: 'Details' },
-    { id: 'confirm', label: 'Confirm' },
-  ]
-  const idx = steps.findIndex(s => s.id === current)
-
-  return (
-    <div className="flex items-center gap-0 mb-8">
-      {steps.map((step, i) => (
-        <div key={step.id} className="flex items-center gap-0 flex-1">
-          <div className="flex flex-col items-center gap-1">
-            <div
-              className={`w-6 h-6 rounded-full border flex items-center justify-center font-mono text-[10px] transition-all
-                ${i < idx ? 'bg-[#00e5ff] border-[#00e5ff] text-black' : ''}
-                ${i === idx ? 'border-[#00e5ff] text-[#00e5ff] shadow-[0_0_10px_rgba(0,229,255,0.3)]' : ''}
-                ${i > idx ? 'border-white/10 text-zinc-700' : ''}
-              `}
-            >
-              {i < idx ? '✓' : i + 1}
-            </div>
-            <span className={`font-mono text-[9px] tracking-wider ${i === idx ? 'text-[#00e5ff]' : 'text-zinc-600'}`}>
-              {step.label}
-            </span>
-          </div>
-          {i < steps.length - 1 && (
-            <div className={`flex-1 h-px mx-1 -mt-4 transition-colors ${i < idx ? 'bg-[#00e5ff]/40' : 'bg-white/[0.06]'}`} />
-          )}
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// ── Input component ───────────────────────────────────────────────────────────
-function GlassInput({
-  label,
-  type = 'text',
-  value,
-  onChange,
-  placeholder,
-  required,
-}: {
-  label: string
-  type?: string
-  value: string
-  onChange: (v: string) => void
-  placeholder?: string
-  required?: boolean
-}) {
-  return (
-    <div>
-      <label className="block font-mono text-[10px] tracking-widest uppercase text-zinc-500 mb-1.5">{label}{required && <span className="text-[#00e5ff] ml-0.5">*</span>}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={e => onChange(e.target.value)}
-        placeholder={placeholder}
-        required={required}
-        className="w-full bg-white/[0.03] border border-white/[0.08] text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-[#00e5ff]/50 focus:ring-1 focus:ring-[#00e5ff]/10 transition-all placeholder-zinc-700 font-mono"
-      />
-    </div>
-  )
-}
-
 // ── Main section ──────────────────────────────────────────────────────────────
 export function BookQuoteSection() {
   const [step, setStep] = useState<BookingStep>('date')
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
+  const [availableSlots, setAvailableSlots] = useState<string[] | null>(null)
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false)
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -224,20 +40,44 @@ export function BookQuoteSection() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
+  const handleDateSelect = async (d: Date) => {
+    setSelectedDate(d)
+    setStep('time')
+    setIsLoadingSlots(true)
+    setAvailableSlots(null)
+    
+    try {
+      // Need to adjust for timezone safely to get correct YYYY-MM-DD
+      const dateStr = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().split('T')[0]
+      const res = await fetch(`/api/booking/available?date=${dateStr}`)
+      const data = await res.json()
+      if (data.availableSlots) {
+        setAvailableSlots(data.availableSlots)
+      } else {
+        setAvailableSlots([])
+      }
+    } catch (err) {
+      setAvailableSlots(TIME_SLOTS.map(t => t.label)) // fallback to all on error
+    } finally {
+      setIsLoadingSlots(false)
+    }
+  }
+
   const handleSubmit = async () => {
     setStatus('loading')
     setErrorMsg('')
     try {
+      const dateStr = selectedDate ? new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().split('T')[0] : ''
       const res = await fetch('/api/booking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
-          date: selectedDate?.toISOString().split('T')[0],
+          date: dateStr,
           timeSlot: selectedSlot,
         }),
       })
-      if (!res.ok) throw new Error(await res.text())
+      if (!res.ok) throw new Error((await res.json()).error || 'Submission failed')
       setStatus('success')
     } catch (e: unknown) {
       setStatus('error')
@@ -265,10 +105,10 @@ export function BookQuoteSection() {
               <h3 className="text-2xl font-bold text-white">Session Booked!</h3>
               <p className="text-zinc-400 text-sm leading-relaxed">
                 Your quote session is confirmed for <span className="text-[#00e5ff]">{selectedDate && formatDate(selectedDate)}</span> at <span className="text-[#00e5ff]">{selectedSlot}</span>.
-                I&apos;ll reach out to <span className="text-white">{form.email}</span> to confirm details.
+                I&apos;ll reach out to <span className="text-white">{form.email}</span> to confirm details. A Google Meet invite has also been sent to your email.
               </p>
               <button
-                onClick={() => { setStatus('idle'); setStep('date'); setSelectedDate(null); setSelectedSlot(null); setForm({ name: '', email: '', phone: '', projectType: '', message: '' }) }}
+                onClick={() => { setStatus('idle'); setStep('date'); setSelectedDate(null); setSelectedSlot(null); setAvailableSlots(null); setForm({ name: '', email: '', phone: '', projectType: '', message: '' }) }}
                 className="font-mono text-xs tracking-widest text-zinc-500 hover:text-white transition-colors uppercase"
               >
                 Book Another →
@@ -291,15 +131,15 @@ export function BookQuoteSection() {
         <div className="flex flex-col gap-12">
           {/* Header */}
           <div className="max-w-xl">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="flex items-center gap-3 mb-5">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} className="flex items-center gap-3 mb-5">
               <span className="block h-px w-8 bg-[#00e5ff]" />
               <span className="font-mono text-xs tracking-[0.2em] uppercase text-[#00e5ff]">Book a Session</span>
             </motion.div>
-            <motion.h2 initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="text-4xl sm:text-5xl font-bold text-white leading-tight mb-4">
+            <motion.h2 initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ delay: 0.1 }} className="text-4xl sm:text-5xl font-bold text-white leading-tight mb-4">
               Let&apos;s scope<br />
               <span className="text-[#00e5ff]">your project.</span>
             </motion.h2>
-            <motion.p initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="text-gray-500 text-sm leading-relaxed">
+            <motion.p initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ delay: 0.2 }} className="text-gray-500 text-sm leading-relaxed">
               Pick a time that works for you. I&apos;ll review your requirements, give you a precise quote, and we&apos;ll map out next steps.
             </motion.p>
           </div>
@@ -308,8 +148,8 @@ export function BookQuoteSection() {
         </div>
 
         {/* Right Column: Booking card */}
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
-          <GlassCard className="p-6 sm:p-10 w-full">
+        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ delay: 0.2 }}>
+          <GlassCard className="p-6 sm:p-10 w-full min-h-[500px]">
             <StepBar current={step} />
 
             <AnimatePresence mode="wait">
@@ -318,7 +158,7 @@ export function BookQuoteSection() {
                 <motion.div key="date" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }}>
                   <h3 className="text-white font-semibold mb-1">Choose a date</h3>
                   <p className="text-zinc-600 text-xs font-mono mb-6">Sundays unavailable · GMT+1</p>
-                  <MiniCalendar selected={selectedDate} onSelect={d => { setSelectedDate(d); setStep('time') }} />
+                  <MiniCalendar selected={selectedDate} onSelect={handleDateSelect} />
                 </motion.div>
               )}
 
@@ -327,22 +167,36 @@ export function BookQuoteSection() {
                 <motion.div key="time" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }}>
                   <h3 className="text-white font-semibold mb-1">Choose a time</h3>
                   <p className="text-zinc-600 text-xs font-mono mb-6">{selectedDate && formatDate(selectedDate)} · Lagos, Nigeria</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
-                    {TIME_SLOTS.map(slot => (
-                      <button
-                        key={slot.id}
-                        onClick={() => { setSelectedSlot(slot.label); setStep('details') }}
-                        className={`p-4 rounded-xl border text-left transition-all
-                          ${selectedSlot === slot.label
-                            ? 'border-[#00e5ff]/50 bg-[#00e5ff]/10 shadow-[0_0_16px_rgba(0,229,255,0.15)]'
-                            : 'border-white/[0.06] bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]'
-                          }`}
-                      >
-                        <p className="text-white font-semibold text-sm">{slot.label}</p>
-                        <p className="text-zinc-600 text-xs font-mono mt-0.5">{slot.sub}</p>
-                      </button>
-                    ))}
-                  </div>
+                  
+                  {isLoadingSlots ? (
+                    <div className="py-8 flex justify-center items-center">
+                      <svg className="w-5 h-5 text-[#00e5ff] animate-spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeDasharray="30 60" /></svg>
+                      <span className="ml-3 text-xs text-zinc-500 font-mono uppercase tracking-widest">Checking availability...</span>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+                      {TIME_SLOTS.map(slot => {
+                        const isAvailable = availableSlots === null ? true : availableSlots.includes(slot.label)
+                        return (
+                          <button
+                            key={slot.id}
+                            disabled={!isAvailable}
+                            onClick={() => { setSelectedSlot(slot.label); setStep('details') }}
+                            className={`p-4 rounded-xl border text-left transition-all
+                              ${!isAvailable
+                                ? 'border-white/[0.02] bg-white/[0.01] opacity-50 cursor-not-allowed'
+                                : selectedSlot === slot.label
+                                ? 'border-[#00e5ff]/50 bg-[#00e5ff]/10 shadow-[0_0_16px_rgba(0,229,255,0.15)]'
+                                : 'border-white/[0.06] bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]'
+                              }`}
+                          >
+                            <p className={`font-semibold text-sm ${!isAvailable ? 'text-zinc-500 line-through' : 'text-white'}`}>{slot.label}</p>
+                            <p className="text-zinc-600 text-xs font-mono mt-0.5">{!isAvailable ? 'Booked' : slot.sub}</p>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
                   <button onClick={() => setStep('date')} className="text-xs font-mono text-zinc-600 hover:text-white transition-colors">← Back</button>
                 </motion.div>
               )}

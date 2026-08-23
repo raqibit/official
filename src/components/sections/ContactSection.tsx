@@ -10,8 +10,13 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { GitHubIcon, InstagramIcon, LinkedInIcon, XIcon } from '@/components/layout/SocialIcons'
+import { ContactModal } from '@/components/ui/ContactModal'
 
 export function ContactSection() {
+  const [isContactOpen, setIsContactOpen] = useState(false)
+
   return (
     <section className="py-28 sm:py-36 bg-[#080808] relative overflow-hidden">
 
@@ -26,7 +31,7 @@ export function ContactSection() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-100px" }}
               className="flex items-center gap-4 mb-10"
             >
               <span className="block h-px w-8 bg-gray-700" />
@@ -41,11 +46,11 @@ export function ContactSection() {
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-100px" }}
               className="text-5xl sm:text-6xl font-bold text-white leading-none mb-6"
               style={{ fontFamily: 'var(--font-sans)' }}
             >
-              Let's build
+              Let&apos;s build
               <br />
               <span
                 className="italic font-normal text-gray-500"
@@ -60,51 +65,35 @@ export function ContactSection() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-100px" }}
               transition={{ delay: 0.1 }}
               className="text-sm text-gray-500 leading-relaxed max-w-md mb-12"
               style={{ fontFamily: 'var(--font-sans)' }}
             >
-              Whether it's a complex web application, a critical hardware repair,
+              Whether it&apos;s a complex web application, a critical hardware repair,
               or a design system — I bring precision and dedication to every
-              project. Let's talk.
+              project. Let&apos;s talk.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-100px" }}
               transition={{ delay: 0.2 }}
               className="flex flex-col items-start gap-10"
             >
-              <a
-                href="mailto:rq.ismaeel@gmail.com"
-                className="group inline-flex items-center gap-3 text-2xl font-bold text-white hover:text-[#00e5ff] transition-colors duration-300"
-                style={{ fontFamily: 'var(--font-sans)' }}
-              >
-                rq.ismaeel@gmail.com
-                <svg
-                  className="h-6 w-6 transition-transform group-hover:translate-x-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                </svg>
-              </a>
 
-              <a
-                href="/rq-ismail-resume.pdf"
-                download="Roqeeb_Ismail_Resume.pdf"
+
+              <button
+                onClick={() => setIsContactOpen(true)}
                 className="group inline-flex items-center justify-center gap-3 w-fit px-8 py-4 bg-[#00e5ff]/10 hover:bg-[#00e5ff]/20 text-[#00e5ff] border border-[#00e5ff]/20 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(0,229,255,0.1)] hover:shadow-[0_0_25px_rgba(0,229,255,0.2)]"
                 style={{ fontFamily: 'var(--font-mono)' }}
               >
-                <span className="text-xs uppercase tracking-widest font-bold">Download Resume</span>
+                <span className="text-xs uppercase tracking-widest font-bold">Contact Me</span>
                 <svg className="w-4 h-4 group-hover:-translate-y-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
-              </a>
+              </button>
             </motion.div>
           </div>
 
@@ -112,7 +101,7 @@ export function ContactSection() {
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7, delay: 0.2 }}
             className="flex flex-col gap-10 pt-4 lg:pt-24"
           >
@@ -124,32 +113,22 @@ export function ContactSection() {
               >
                 Elsewhere
               </h3>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-wrap gap-4">
                 {[
-                  { label: 'GitHub', handle: '@rq-ismail', href: 'https://github.com/rq-ismail', color: '#00e5ff' },
-                  { label: 'LinkedIn', handle: '/in/roqeebismail', href: 'https://linkedin.com/in/roqeebismail', color: '#00e5ff' },
-                  { label: 'X (Twitter)', handle: '@prime3it', href: 'https://x.com/prime3it', color: '#7c3aed' },
-                  { label: 'Instagram', handle: '@rq_ismail', href: 'https://instagram.com/rq_ismail', color: '#7c3aed' },
+                  { label: 'GitHub', icon: GitHubIcon, href: 'https://github.com/rq-ismail', color: '#00e5ff' },
+                  { label: 'LinkedIn', icon: LinkedInIcon, href: 'https://linkedin.com/in/roqeebismail', color: '#00e5ff' },
+                  { label: 'X (Twitter)', icon: XIcon, href: 'https://x.com/prime3it', color: '#7c3aed' },
+                  { label: 'Instagram', icon: InstagramIcon, href: 'https://instagram.com/rq_ismail', color: '#7c3aed' },
                 ].map((social) => (
                   <Link
                     key={social.label}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center justify-between border-b border-[rgba(255,255,255,0.05)] pb-4 hover:border-[rgba(0,229,255,0.2)] transition-colors"
+                    aria-label={social.label}
+                    className="group flex items-center justify-center w-11 h-11 rounded-full border border-[rgba(255,255,255,0.05)] hover:border-[rgba(0,229,255,0.4)] transition-all"
                   >
-                    <span
-                      className="text-xs uppercase tracking-widest text-gray-600"
-                      style={{ fontFamily: 'var(--font-mono)' }}
-                    >
-                      {social.label}
-                    </span>
-                    <span
-                      className="text-sm text-gray-400 group-hover:text-white transition-colors"
-                      style={{ fontFamily: 'var(--font-mono)', color: social.color, opacity: 0.7 }}
-                    >
-                      {social.handle}
-                    </span>
+                    <social.icon className="h-5 w-5 fill-gray-500 group-hover:fill-[#00e5ff] transition-colors" />
                   </Link>
                 ))}
               </div>
@@ -157,7 +136,7 @@ export function ContactSection() {
 
             {/* Location */}
             <div
-              className="flex items-center gap-3 text-sm text-gray-600"
+              className="flex items-center gap-3 text-sm text-gray-600 mb-8"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
               <span className="block w-1.5 h-1.5 rounded-full bg-[#00e5ff] animate-pulse" />
@@ -167,6 +146,9 @@ export function ContactSection() {
 
         </div>
       </div>
+      
+      {/* Contact Modal Overlay */}
+      <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
     </section>
   )
 }

@@ -10,6 +10,7 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import { useState, useRef } from 'react'
 
 // ── Studio stats ──────────────────────────────────────────────────────────────
 const STATS = [
@@ -28,6 +29,19 @@ const SERVICES = [
 ]
 
 export function StudioSection() {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isHovering, setIsHovering] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    setMousePosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    })
+  }
+
   return (
     <section id="studio" className="relative bg-[#080808] py-28 sm:py-36 overflow-hidden">
       {/* Ambient amber glow — top-right */}
@@ -39,7 +53,7 @@ export function StudioSection() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-100px" }}
           className="flex items-center gap-4 mb-16"
         >
           <span className="block h-px w-8 bg-amber-500" />
@@ -53,51 +67,67 @@ export function StudioSection() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
 
-          {/* ── LEFT — Amber-tinted studio photo ─────────────── */}
+          {/* ── LEFT — Studio photo ─────────────── */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
-            className="relative h-[420px] lg:h-[520px] w-full order-2 lg:order-1 rounded-2xl overflow-hidden"
+            className="relative h-[420px] lg:h-[520px] w-full order-2 lg:order-1 rounded-2xl overflow-hidden group bg-gray-900/5"
+            ref={containerRef}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
           >
             {/* Corner frame markers */}
-            <span className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-amber-500 opacity-50 z-20" />
-            <span className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-amber-500 opacity-50 z-20" />
-            <span className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-amber-500 opacity-50 z-20" />
-            <span className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-amber-500 opacity-50 z-20" />
+            <span className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-amber-500 opacity-50 z-20 transition-opacity duration-700 group-hover:opacity-10" />
+            <span className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-amber-500 opacity-50 z-20 transition-opacity duration-700 group-hover:opacity-10" />
+            <span className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-amber-500 opacity-50 z-20 transition-opacity duration-700 group-hover:opacity-10" />
+            <span className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-amber-500 opacity-50 z-20 transition-opacity duration-700 group-hover:opacity-10" />
 
             {/* Floating label badge */}
             <span
-              className="absolute top-4 left-1/2 -translate-x-1/2 font-mono text-[10px] tracking-[0.25em] uppercase text-amber-400 opacity-90 z-20 bg-[#080808]/60 px-4 py-1.5 rounded-full backdrop-blur-md border border-amber-500/20"
+              className="absolute top-4 left-1/2 -translate-x-1/2 font-mono text-[10px] tracking-[0.25em] uppercase text-amber-400 opacity-90 z-20 bg-[#080808]/60 px-4 py-1.5 rounded-full backdrop-blur-md border border-amber-500/20 transition-opacity duration-700 group-hover:opacity-0"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
-              MICROSOLDERING STATION
+              ENGINEERED FOR PRECISION
             </span>
 
-            {/* Bottom gradient — blends photo into section background */}
-            <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#080808] via-[#080808]/40 to-transparent" />
-
-            {/* Amber duotone blend layers */}
-            <div className="absolute inset-0 z-10 bg-amber-500 mix-blend-multiply opacity-50" />
-            <div className="absolute inset-0 z-10 bg-amber-500 mix-blend-color opacity-40" />
-
-            {/* Studio photo — grayscale + contrast for duotone to work correctly */}
+            {/* Base Studio photo — b/w and blended */}
             <Image
               src="/images/studio/photo1.jpg"
               alt="Microsoldering Studio — Roqeeb Ismail"
               fill
               loading="lazy"
-              className="object-cover opacity-90 grayscale contrast-125 transition-transform duration-1000 hover:scale-105"
+              className="object-cover opacity-50 grayscale mix-blend-luminosity pointer-events-none"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
+
+            {/* Overlay Studio photo — full color revealed by mouse mask */}
+            <div
+              className="absolute inset-0 z-10 pointer-events-none transition-opacity duration-300"
+              style={{
+                opacity: isHovering ? 1 : 0,
+                WebkitMaskImage: `radial-gradient(circle 200px at ${mousePosition.x}px ${mousePosition.y}px, black 0%, transparent 100%)`,
+                maskImage: `radial-gradient(circle 200px at ${mousePosition.x}px ${mousePosition.y}px, black 0%, transparent 100%)`,
+              }}
+            >
+              <Image
+                src="/images/studio/photo1.jpg"
+                alt="Microsoldering Studio — Roqeeb Ismail (Color Reveal)"
+                fill
+                loading="lazy"
+                className="object-cover pointer-events-none"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
+            </div>
           </motion.div>
 
           {/* ── RIGHT — Copy + stats + services ──────────────── */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, delay: 0.1 }}
             className="order-1 lg:order-2"
           >

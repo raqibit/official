@@ -3,22 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PurchaseModal } from '@/components/overlays/PurchaseModal'
-
-export type FullProject = {
-  id: string
-  name: string
-  tagline: string
-  about: string
-  videoUrl: string
-  images?: string[]
-  liveUrl: string
-  githubUrl: string
-  techStack: string[]
-  review: string
-  price: number
-  accentColor: string
-}
-
+import { type Project } from '@/data/projects'
 type Tab = 'overview' | 'stack' | 'review'
 
 function CloseIcon() {
@@ -39,7 +24,7 @@ function ExternalLinkIcon() {
 
 // ─── Visual Panel (Left) ─────────────────────────────────────────────────────
 
-function VisualPanel({ project }: { project: FullProject }) {
+function VisualPanel({ project }: { project: Project }) {
   const [isHovering, setIsHovering] = useState(false)
   const [activeIdx, setActiveIdx] = useState(0)
 
@@ -142,13 +127,7 @@ function VisualPanel({ project }: { project: FullProject }) {
 
 // ─── Details Panel (Right) ───────────────────────────────────────────────────
 
-function DetailsPanel({
-  project,
-  onPurchase,
-}: {
-  project: FullProject
-  onPurchase: () => void
-}) {
+function DetailsPanel({ project, onPurchase }: { project: Project; onPurchase: () => void }) {
   const [tab, setTab] = useState<Tab>('overview')
 
   const tabs: { id: Tab; label: string }[] = [
@@ -234,7 +213,7 @@ function DetailsPanel({
             {tab === 'review' && safeReview && (
               <div className="relative pl-5 border-l-2" style={{ borderColor: project.accentColor }}>
                 <p className="text-xl font-display italic text-gray-300 leading-relaxed">
-                  "{safeReview}"
+                  &quot;{safeReview}&quot;
                 </p>
               </div>
             )}
@@ -273,31 +252,13 @@ function DetailsPanel({
 // ─── Main Overlay ────────────────────────────────────────────────────────────
 
 export function ProjectDetailOverlay({
-  projectId,
+  project,
   onClose,
 }: {
-  projectId: string | null
+  project: Project | null
   onClose: () => void
 }) {
-  const [project, setProject] = useState<FullProject | null>(null)
-  const [loading, setLoading] = useState(false)
   const [purchaseOpen, setPurchaseOpen] = useState(false)
-
-  // Fetch full project details when id changes
-  useEffect(() => {
-    if (!projectId) {
-      setProject(null)
-      return
-    }
-    setLoading(true)
-    fetch(`/api/projects/${projectId}`)
-      .then(r => r.json())
-      .then(data => {
-        setProject(data)
-        setLoading(false)
-      })
-      .catch(() => setLoading(false))
-  }, [projectId])
 
   // Esc key closes overlay
   const handleKey = useCallback(
@@ -307,7 +268,7 @@ export function ProjectDetailOverlay({
     [onClose],
   )
   useEffect(() => {
-    if (projectId) {
+    if (project) {
       document.addEventListener('keydown', handleKey)
       document.body.style.overflow = 'hidden'
     }
@@ -315,9 +276,9 @@ export function ProjectDetailOverlay({
       document.removeEventListener('keydown', handleKey)
       document.body.style.overflow = ''
     }
-  }, [projectId, handleKey])
+  }, [project, handleKey])
 
-  const isOpen = !!projectId
+  const isOpen = !!project
 
   return (
     <>
@@ -342,7 +303,7 @@ export function ProjectDetailOverlay({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 40, scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-              className="fixed inset-x-4 top-[5vh] bottom-[5vh] z-[201] max-w-[1200px] mx-auto bg-[#0f0f0f] border border-[rgba(255,255,255,0.07)] rounded-2xl overflow-hidden flex flex-col shadow-2xl"
+              className="fixed inset-x-4 top-[3vh] bottom-[3vh] z-[201] max-w-[1000px] mx-auto bg-[#0f0f0f] border border-[rgba(255,255,255,0.07)] rounded-2xl overflow-hidden flex flex-col shadow-2xl"
               style={{ boxShadow: project ? `0 0 80px 0 ${project.accentColor}18` : undefined }}
             >
               {/* Top bar */}
@@ -376,16 +337,7 @@ export function ProjectDetailOverlay({
 
               {/* Body */}
               <div className="flex-1 overflow-hidden p-8">
-                {loading && (
-                  <div className="h-full flex items-center justify-center">
-                    <div className="flex flex-col items-center gap-4">
-                      <div className="w-8 h-8 border-2 border-[rgba(255,255,255,0.1)] border-t-white rounded-full animate-spin" />
-                      <span className="font-mono text-xs text-gray-600 tracking-widest">LOADING</span>
-                    </div>
-                  </div>
-                )}
-
-                {!loading && project && (
+                {project && (
                   <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-10 h-full">
                     <VisualPanel project={project} />
                     <DetailsPanel project={project} onPurchase={() => setPurchaseOpen(true)} />

@@ -3,7 +3,6 @@ import { Space_Grotesk, Playfair_Display, JetBrains_Mono } from 'next/font/googl
 
 import { Providers } from '@/app/providers'
 import { Layout } from '@/components/layout/Layout'
-import { AIChatWidget } from '@/components/overlays/AIChatWidget'
 import { MagneticCursor } from '@/components/ui/MagneticCursor'
 
 import '@/styles/tailwind.css'
@@ -33,10 +32,13 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: {
     template: '%s - Roqeeb Ismail',
-    default: 'Roqeeb Ismail — Software Engineer, Visual Designer & Microsoldering Specialist',
+    default: 'Roqeeb Ismail — Software Engineer',
   },
   description:
-    'Software engineer, visual designer, and professional microsoldering specialist. Building high-performance interfaces and repairing devices at the circuit level.',
+    'Software engineer focused on building high-performance interfaces and scalable systems.',
+}
+
+export const viewport = {
   themeColor: '#0a0a0a',
 }
 
@@ -57,7 +59,6 @@ export default function RootLayout({
           <div className="flex w-full">
             <Layout>{children}</Layout>
           </div>
-          <AIChatWidget />
         </Providers>
       </body>
     </html>

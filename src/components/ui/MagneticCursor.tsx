@@ -18,14 +18,12 @@ export function MagneticCursor() {
   const [isHovering, setIsHovering] = useState(false)
   const [isClicking, setIsClicking] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
-  const [isTouchDevice, setIsTouchDevice] = useState(false)
+  const [isTouchDevice] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches
+  )
 
   useEffect(() => {
-    // Disable on touch devices
-    if (window.matchMedia('(hover: none)').matches) {
-      setIsTouchDevice(true)
-      return
-    }
+    if (isTouchDevice) return
 
     const onMove = (e: MouseEvent) => {
       mouseX.set(e.clientX)
@@ -71,7 +69,7 @@ export function MagneticCursor() {
       document.removeEventListener('mouseenter', onEnter)
       window.removeEventListener('mouseover', onOver)
     }
-  }, [mouseX, mouseY, isVisible])
+  }, [mouseX, mouseY, isVisible, isTouchDevice])
 
   if (isTouchDevice) return null
 
