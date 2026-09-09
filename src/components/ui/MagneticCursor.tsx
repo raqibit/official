@@ -22,7 +22,7 @@ export function MagneticCursor() {
 
   useEffect(() => {
     // Detect touch device on client only
-    setIsTouchDevice(window.matchMedia('(hover: none)').matches)
+    setTimeout(() => setIsTouchDevice(window.matchMedia('(hover: none)').matches), 0)
   }, [])
 
   useEffect(() => {
