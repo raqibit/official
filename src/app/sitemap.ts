@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { getProjects } from '@/lib/mdx'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://prime3it.vercel.app'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
   const projects = getProjects()
 
   const staticRoutes = [

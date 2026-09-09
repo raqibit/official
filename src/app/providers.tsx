@@ -3,6 +3,7 @@
 import { createContext, useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 
+// Tracks the previous route for page transition animations
 export const AppContext = createContext<{ previousPathname?: string }>({})
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -11,7 +12,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const pathnameRef = useRef(pathname)
 
   useEffect(() => {
-    // Store the previous pathname before it changes
     setPreviousPathname(pathnameRef.current)
     pathnameRef.current = pathname
   }, [pathname])

@@ -1,27 +1,17 @@
-import nextMDX from '@next/mdx'
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Allow .mdx files to be used as pages if needed in future
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
-  outputFileTracingIncludes: {
-    '/articles/*': ['./src/app/articles/**/*.mdx'],
-  },
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'nexter.netlify.app',
-      },
-    ],
+    // All project images are now local — no external domains needed
+    formats: ['image/avif', 'image/webp'],
   },
+  // Compress responses
+  compress: true,
+  // Strict mode for better debugging in development
+  reactStrictMode: true,
+  // Disable x-powered-by header for security
+  poweredByHeader: false,
 }
 
-const withMDX = nextMDX({
-  extension: /\.mdx?$/,
-  options: {
-    remarkPlugins: ['remark-gfm'],
-    rehypePlugins: ['@mapbox/rehype-prism'],
-  },
-})
-
-export default withMDX(nextConfig)
+export default nextConfig

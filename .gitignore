@@ -35,6 +35,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# temp / scratch
+public/temp/
+
 /src/generated/prisma
 
 # IDEs and AI Agents
