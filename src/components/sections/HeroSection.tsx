@@ -78,7 +78,7 @@ export function HeroSection() {
             <motion.div variants={item} className="flex items-center gap-4 mb-8">
               <span className="block h-px w-10 bg-white/20" />
               <p className="text-xs text-gray-400 font-mono tracking-[0.2em] uppercase">
-                Roqeeb Ismail
+                Raqīb Ismāʿīl
               </p>
             </motion.div>
 

@@ -31,8 +31,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s - Roqeeb Ismail',
-    default: 'Roqeeb Ismail — Software Engineer',
+    template: '%s - Raqīb Ismāʿīl',
+    default: 'Raqīb Ismāʿīl — Software Engineer',
   },
   description:
     'Software engineer focused on building high-performance interfaces and scalable systems.',

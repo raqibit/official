@@ -4,7 +4,7 @@ import { AboutContent } from './AboutContent'
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'I am Roqeeb Ismail. I live in Lagos, Nigeria, where I build software and design visuals.',
+    'I am Raqīb Ismāʿīl. I live in Lagos, Nigeria, where I build software and design visuals.',
 }
 
 export default function About() {

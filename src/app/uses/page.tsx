@@ -2,7 +2,7 @@ import { type Metadata } from 'next'
 import { UsesContent } from './UsesContent'
 
 export const metadata: Metadata = {
-  title: 'Uses | Roqeeb Ismail',
+  title: 'Uses | Raqīb Ismāʿīl',
   description: 'The tools, hardware, and software I use to build, design, and repair things.',
 }
 

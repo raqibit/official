@@ -14,12 +14,12 @@ export async function POST(req: Request) {
 
     // Send a welcome confirmation email to the subscriber
     await resend.emails.send({
-      from: 'Roqeeb Ismail <hello@rq-ismail.dev>',
+      from: 'Raqīb Ismāʿīl <hello@rq-ismail.dev>',
       to: email,
-      subject: 'You\'re subscribed — Roqeeb Ismail',
+      subject: 'You\'re subscribed — Raqīb Ismāʿīl',
       html: `
         <div style="font-family: -apple-system, sans-serif; max-width: 560px; margin: 0 auto; background: #0a0a0a; color: #f0f0f0; padding: 48px 32px; border-radius: 12px;">
-          <p style="font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #555; margin-bottom: 24px; font-family: monospace;">Roqeeb Ismail</p>
+          <p style="font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #555; margin-bottom: 24px; font-family: monospace;">Raqīb Ismāʿīl</p>
           <h1 style="font-size: 28px; font-weight: 700; color: #ffffff; line-height: 1.2; margin: 0 0 16px;">You're in.</h1>
           <p style="color: #888; line-height: 1.7; font-size: 15px; margin: 0 0 32px;">
             Thanks for subscribing. You'll hear from me when I ship new projects, publish hardware experiments, or write something worth reading. No spam — ever.

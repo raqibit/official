@@ -1,4 +1,4 @@
-# Roqeeb Ismail | Software Engineer
+# Raqīb Ismāʿīl | Software Engineer
 
 A high-performance, pixel-perfect personal portfolio and studio platform showcasing advanced software engineering, UI/UX architecture, and microsoldering capabilities. Built with modern web technologies, prioritizing cinematic aesthetics and frictionless user experiences.
 
@@ -62,4 +62,4 @@ npm run start
 
 ## License
 
-Personal Project. All rights reserved by Roqeeb Ismail.
+Personal Project. All rights reserved by Raqīb Ismāʿīl.

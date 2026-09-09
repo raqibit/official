@@ -31,19 +31,19 @@ export async function POST(req: Request) {
 
     // Send auto-reply to the user
     await resend.emails.send({
-      from: 'Roqeeb Ismail <hello@rq-ismail.dev>',
+      from: 'Raqīb Ismāʿīl <hello@rq-ismail.dev>',
       to: email,
       subject: 'Thanks for reaching out',
       html: `
         <div style="font-family: -apple-system, sans-serif; max-width: 560px; margin: 0 auto; background: #0a0a0a; color: #f0f0f0; padding: 48px 32px; border-radius: 12px;">
-          <p style="font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #555; margin-bottom: 24px; font-family: monospace;">Roqeeb Ismail</p>
+          <p style="font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #555; margin-bottom: 24px; font-family: monospace;">Raqīb Ismāʿīl</p>
           <h1 style="font-size: 24px; font-weight: 700; color: #ffffff; line-height: 1.2; margin: 0 0 16px;">Message Received.</h1>
           <p style="color: #888; line-height: 1.7; font-size: 15px; margin: 0 0 32px;">
             Hi ${name},<br/><br/>
             Thanks for getting in touch. I've received your inquiry regarding <strong>${inquiryType}</strong> and I'll get back to you as soon as possible.
           </p>
           <p style="color: #444; font-size: 12px; margin-top: 48px; border-top: 1px solid #1a1a1a; padding-top: 24px;">
-            Roqeeb Ismail · Software Engineer & Hardware Technician
+            Raqīb Ismāʿīl · Software Engineer & Hardware Technician
           </p>
         </div>
       `,

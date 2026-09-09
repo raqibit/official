@@ -97,7 +97,7 @@ export function PurchaseModal({
                     <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.05)] p-6 rounded text-sm text-gray-300 font-mono space-y-4">
                       <div><span className="text-gray-500">Bank:</span> Guaranty Trust Bank (GTB)</div>
                       <div><span className="text-gray-500">Account:</span> 0123456789</div>
-                      <div><span className="text-gray-500">Name:</span> Roqeeb Ismail</div>
+                      <div><span className="text-gray-500">Name:</span> Raqīb Ismāʿīl</div>
                       <p className="text-xs text-gray-500 mt-4 font-sans">Please send proof of payment to rq.ismaeel@gmail.com after transfer.</p>
                     </div>
                   )}
@@ -105,7 +105,7 @@ export function PurchaseModal({
                   {selectedMethod === 'opay' && (
                     <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.05)] p-6 rounded text-sm text-gray-300 font-mono space-y-4">
                       <div><span className="text-gray-500">Opay Number:</span> 08123456789</div>
-                      <div><span className="text-gray-500">Name:</span> Roqeeb Ismail</div>
+                      <div><span className="text-gray-500">Name:</span> Raqīb Ismāʿīl</div>
                       <p className="text-xs text-gray-500 mt-4 font-sans">Please send proof of payment to rq.ismaeel@gmail.com after transfer.</p>
                     </div>
                   )}

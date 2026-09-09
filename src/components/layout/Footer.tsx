@@ -41,7 +41,7 @@ export function Footer() {
               className="text-white font-bold tracking-tight text-sm"
               style={{ fontFamily: 'var(--font-sans)' }}
             >
-              Roqeeb Ismail
+              Raqīb Ismāʿīl
             </span>
             <span
               className="font-mono text-[10px] tracking-[0.2em] uppercase text-gray-700"
@@ -89,7 +89,7 @@ export function Footer() {
           <p
             className="text-[11px] text-gray-700 font-mono tracking-wide"
           >
-            &copy; 2025 Roqeeb Ismail. All rights reserved.
+            &copy; 2025 Raqīb Ismāʿīl. All rights reserved.
           </p>
 
           <div className="flex items-center gap-1.5">

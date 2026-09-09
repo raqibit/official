@@ -287,7 +287,7 @@ export function BookQuoteSection() {
                         </p>
                         <div className="flex flex-col gap-4">
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <GlassInput label="Full Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} placeholder="Roqeeb Ismail" required />
+                            <GlassInput label="Full Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} placeholder="Raqīb Ismāʿīl" required />
                             <GlassInput label="Email" type="email" value={form.email} onChange={v => setForm(f => ({ ...f, email: v }))} placeholder="you@example.com" required />
                           </div>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

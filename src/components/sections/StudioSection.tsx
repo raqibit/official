@@ -96,7 +96,7 @@ export function StudioSection() {
             {/* Base Studio photo — b/w and blended */}
             <Image
               src="/images/studio/photo1.jpg"
-              alt="Microsoldering Studio — Roqeeb Ismail"
+              alt="Microsoldering Studio — Raqīb Ismāʿīl"
               fill
               loading="lazy"
               className="object-cover opacity-50 grayscale mix-blend-luminosity pointer-events-none"
@@ -114,7 +114,7 @@ export function StudioSection() {
             >
               <Image
                 src="/images/studio/photo1.jpg"
-                alt="Microsoldering Studio — Roqeeb Ismail (Color Reveal)"
+                alt="Microsoldering Studio — Raqīb Ismāʿīl (Color Reveal)"
                 fill
                 loading="lazy"
                 className="object-cover pointer-events-none"

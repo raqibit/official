@@ -200,7 +200,7 @@ export function AboutContent() {
             {/* Base Image - B/W */}
             <Image
               src={portraitImage}
-              alt="Roqeeb Ismail"
+              alt="Raqīb Ismāʿīl"
               width={500}
               height={625}
               priority
@@ -219,7 +219,7 @@ export function AboutContent() {
             >
               <Image
                 src={portraitImage}
-                alt="Roqeeb Ismail (Color Reveal)"
+                alt="Raqīb Ismāʿīl (Color Reveal)"
                 fill
                 priority
                 className="object-cover pointer-events-none"
