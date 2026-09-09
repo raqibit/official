@@ -7,6 +7,17 @@ import { type Project as ProjectType } from '@/lib/mdx'
 import { ProjectDetailOverlay } from '@/components/overlays/ProjectDetailOverlay'
 import { ArrowIcon } from '@/components/icons'
 
+// ── Shuffle (client-only, SSR-safe) ───────────────────────────────────────────
+
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+      ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
 // ── ProjectCard ───────────────────────────────────────────────────────────────
 
 const ProjectCard = memo(function ProjectCard({
@@ -27,7 +38,7 @@ const ProjectCard = memo(function ProjectCard({
     const video = videoRef.current
     if (!video || mainImage) return
     if (isHovered) {
-      video.play().catch(() => {})
+      video.play().catch(() => { })
     } else {
       video.pause()
     }
@@ -40,9 +51,11 @@ const ProjectCard = memo(function ProjectCard({
       viewport={{ once: true, margin: '-80px' }}
       transition={{ duration: 0.55, delay: (index % 3) * 0.08 }}
       onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
       className={`group relative overflow-hidden cursor-pointer rounded-2xl bg-[#111] ${
-        project.wide 
-          ? 'sm:col-span-2 aspect-[4/3]' 
+        project.wide
+          ? 'sm:col-span-2 aspect-[16/9] sm:aspect-auto sm:h-full'
           : 'col-span-1 aspect-[4/3]'
       }`}
     >
@@ -52,10 +65,8 @@ const ProjectCard = memo(function ProjectCard({
           src={mainImage}
           alt={project.name}
           fill
-          quality={100}
-          unoptimized={true}
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 50vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
       ) : project.videoUrl ? (
         <video
@@ -191,8 +202,13 @@ const ProjectCard = memo(function ProjectCard({
 export function ProjectsClient({ projects }: { projects: ProjectType[] }) {
   const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null)
 
-  // Use the pre-sorted array from the MDX parser to enforce the Bento layout
-  const displayProjects = projects
+  // SSR-safe shuffle: start with original server-rendered order,
+  // shuffle only after client hydration completes (no mismatch).
+  const [displayProjects, setDisplayProjects] = useState<ProjectType[]>(projects)
+  useEffect(() => {
+    setDisplayProjects(shuffle(projects))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] pt-32 pb-28">
@@ -232,7 +248,7 @@ export function ProjectsClient({ projects }: { projects: ProjectType[] }) {
         </div>
 
         {/* ── Projects Grid ───────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 grid-flow-row-dense">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
           {displayProjects.map((project, index) => (
             <ProjectCard
               key={project.id}
