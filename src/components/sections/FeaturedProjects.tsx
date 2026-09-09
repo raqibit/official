@@ -104,6 +104,8 @@ function ProjectCard({
             src={mainImage}
             alt={project.name}
             fill
+            quality={100}
+            unoptimized={true}
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             sizes="(max-width: 1024px) 100vw, 66vw"
           />
