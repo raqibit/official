@@ -40,10 +40,10 @@ const ProjectCard = memo(function ProjectCard({
       viewport={{ once: true, margin: '-80px' }}
       transition={{ duration: 0.55, delay: (index % 3) * 0.08 }}
       onMouseEnter={() => setIsHovered(true)}
-      className={`group relative overflow-hidden cursor-pointer rounded-2xl bg-[#111] sm:min-h-[380px] lg:min-h-[460px] ${
+      className={`group relative overflow-hidden cursor-pointer rounded-2xl bg-[#111] ${
         project.wide 
-          ? 'sm:col-span-3 aspect-[16/9] sm:aspect-auto sm:h-full' 
-          : 'sm:col-span-2 aspect-[4/3] sm:aspect-auto sm:h-full'
+          ? 'sm:col-span-2 aspect-[16/9] sm:aspect-[2/1] lg:aspect-[16/9]' 
+          : 'col-span-1 aspect-[4/3]'
       }`}
     >
       {/* ── Full-bleed media layer (always covers 100% of card) ─── */}
@@ -232,7 +232,7 @@ export function ProjectsClient({ projects }: { projects: ProjectType[] }) {
         </div>
 
         {/* ── Projects Grid ───────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-5 gap-5 md:gap-6 grid-flow-row-dense">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 grid-flow-row-dense">
           {displayProjects.map((project, index) => (
             <ProjectCard
               key={project.id}
