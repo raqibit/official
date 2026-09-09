@@ -37,8 +37,8 @@ const timeline = [
 ]
 
 const skills = [
-  { name: 'React / Next.js', level: 99, color: '#33ff00ff' },
-  { name: 'Node.js / Express', level: 95, color: '#7700ffff' },
+  { name: 'React / Next.js', level: 99, color: '#00e5ff' },
+  { name: 'Node.js / Express', level: 95, color: '#7c3aed' },
   { name: 'MongoDB / Supabase', level: 90, color: '#00e5ff' },
   { name: 'Microsoldering', level: 95, color: '#f59e0b' },
   { name: 'Visual Design', level: 92, color: '#7c3aed' },

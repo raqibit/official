@@ -1,362 +1,396 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
+import { type Project } from '@/lib/mdx'
 import { PurchaseModal } from '@/components/overlays/PurchaseModal'
-import { type Project } from '@/data/projects'
-type Tab = 'overview' | 'stack' | 'review'
+
+// ── Icons ─────────────────────────────────────────────────────────────────────
 
 function CloseIcon() {
   return (
-    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
     </svg>
   )
 }
 
 function ExternalLinkIcon() {
   return (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
     </svg>
   )
 }
 
-// ─── Visual Panel (Left) ─────────────────────────────────────────────────────
+function GitHubIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+    </svg>
+  )
+}
 
-function VisualPanel({ project }: { project: Project }) {
-  const [isHovering, setIsHovering] = useState(false)
+function ChevronIcon({ direction }: { direction: 'left' | 'right' }) {
+  return (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round"
+        d={direction === 'left' ? 'M15.75 19.5L8.25 12l7.5-7.5' : 'M8.25 4.5l7.5 7.5-7.5 7.5'}
+      />
+    </svg>
+  )
+}
+
+// ── Image Gallery ─────────────────────────────────────────────────────────────
+
+function ImageGallery({ images, name, accentColor }: { images: string[]; name: string; accentColor: string }) {
   const [activeIdx, setActiveIdx] = useState(0)
 
-  const images = (project.images ?? []).filter(Boolean)
-  const mainImage = images[activeIdx] ?? null
-  const hasVideo = !!project.videoUrl
-  const hasMultiple = images.length > 1
+  const prev = useCallback(() =>
+    setActiveIdx(i => (i - 1 + images.length) % images.length), [images.length])
+  const next = useCallback(() =>
+    setActiveIdx(i => (i + 1) % images.length), [images.length])
+
+  if (images.length === 0) return null
 
   return (
-    <div className="flex flex-col gap-4 h-full">
-      {/* Main Visual */}
-      <div
-        className="relative flex-1 min-h-0 rounded-xl overflow-hidden bg-[#0d0d0d] border border-[rgba(255,255,255,0.06)] cursor-pointer select-none"
-        onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
-      >
-        {/* Static Image */}
-        {mainImage && (
-          <motion.img
-            key={activeIdx}
-            src={mainImage}
-            alt={project.name}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isHovering && hasVideo ? 0 : 1 }}
-            transition={{ duration: 0.4 }}
-            className="absolute inset-0 w-full h-full object-cover"
+    <div className="relative w-full aspect-video bg-[#0a0a0a] overflow-hidden rounded-none">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeIdx}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.35 }}
+          className="absolute inset-0"
+        >
+          <Image
+            src={images[activeIdx]}
+            alt={`${name} — screenshot ${activeIdx + 1}`}
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 60vw"
+            priority={activeIdx === 0}
           />
-        )}
+        </motion.div>
+      </AnimatePresence>
 
-        {/* Video — fades in on hover */}
-        {hasVideo && (
-          <motion.div
-            animate={{ opacity: isHovering ? 1 : 0 }}
-            transition={{ duration: 0.4 }}
-            className="absolute inset-0"
-          >
-            <video
-              src={project.videoUrl}
-              autoPlay={isHovering}
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
-        )}
-
-        {/* Empty state */}
-        {!mainImage && !hasVideo && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="font-mono text-xs text-gray-600 tracking-widest">NO MEDIA</span>
-          </div>
-        )}
-
-        {/* Accent top line */}
-        <div
-          className="absolute top-0 left-0 right-0 h-[2px] z-10"
-          style={{ background: `linear-gradient(to right, ${project.accentColor}, transparent)` }}
-        />
-
-        {/* Hover badge */}
-        {hasVideo && (
-          <AnimatePresence>
-            {!isHovering && (
-              <motion.div
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 4 }}
-                className="absolute bottom-4 left-4 z-10 flex items-center gap-2 px-3 py-1.5 rounded bg-black/60 backdrop-blur border border-[rgba(255,255,255,0.08)]"
-              >
-                <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: project.accentColor }} />
-                <span className="font-mono text-[10px] text-white tracking-widest">HOVER TO PLAY</span>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        )}
-      </div>
-
-      {/* Thumbnail Strip */}
-      {hasMultiple && (
-        <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
-          {images.map((img, idx) => (
-            <button
-              key={idx}
-              onClick={() => setActiveIdx(idx)}
-              className={`relative flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
-                activeIdx === idx
-                  ? 'border-white opacity-100'
-                  : 'border-transparent opacity-40 hover:opacity-70'
-              }`}
-            >
-              <img src={img} alt="" className="w-full h-full object-cover" />
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
-
-// ─── Details Panel (Right) ───────────────────────────────────────────────────
-
-function DetailsPanel({ project, onPurchase }: { project: Project; onPurchase: () => void }) {
-  const [tab, setTab] = useState<Tab>('overview')
-
-  const tabs: { id: Tab; label: string }[] = [
-    { id: 'overview', label: 'Overview' },
-    { id: 'stack', label: 'Tech Stack' },
-    ...(project.review ? [{ id: 'review' as Tab, label: 'Review' }] : []),
-  ]
-
-  const safeAbout = project.about ?? ''
-  const safeTechStack = project.techStack ?? []
-  const safeReview = project.review ?? ''
-
-  return (
-    <div className="flex flex-col h-full overflow-hidden">
-      {/* Project header */}
-      <div className="mb-8 flex-shrink-0">
-        <div className="flex items-center gap-3 mb-4">
-          <span className="w-2 h-2 rounded-full" style={{ background: project.accentColor }} />
-          <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-gray-500">Case Study</span>
-        </div>
-        <h2 className="text-3xl sm:text-4xl font-bold font-sans text-white leading-tight mb-3">
-          {project.name}.
-        </h2>
-        <p className="text-lg text-gray-400 font-display italic leading-snug">
-          {project.tagline}
-        </p>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex items-center gap-1 p-1 bg-[rgba(255,255,255,0.03)] rounded-full border border-[rgba(255,255,255,0.05)] mb-8 flex-shrink-0 self-start">
-        {tabs.map(t => (
+      {/* Nav arrows — only if multiple images */}
+      {images.length > 1 && (
+        <>
           <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className={`relative px-5 py-2 rounded-full text-sm font-sans transition-all ${
-              tab === t.id ? 'text-white' : 'text-gray-500 hover:text-gray-300'
-            }`}
+            onClick={prev}
+            aria-label="Previous image"
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center text-white hover:bg-black/80 transition-colors"
           >
-            {tab === t.id && (
-              <motion.div
-                layoutId="overlay-tab"
-                className="absolute inset-0 bg-[rgba(255,255,255,0.08)] rounded-full border border-[rgba(255,255,255,0.08)]"
-                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            <ChevronIcon direction="left" />
+          </button>
+          <button
+            onClick={next}
+            aria-label="Next image"
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center text-white hover:bg-black/80 transition-colors"
+          >
+            <ChevronIcon direction="right" />
+          </button>
+
+          {/* Dot indicators */}
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveIdx(i)}
+                aria-label={`Go to image ${i + 1}`}
+                className="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                style={{ background: i === activeIdx ? accentColor : 'rgba(255,255,255,0.3)' }}
               />
-            )}
-            <span className="relative z-10">{t.label}</span>
-          </button>
-        ))}
-      </div>
+            ))}
+          </div>
+        </>
+      )}
 
-      {/* Tab Content (scrollable) */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[rgba(255,255,255,0.08)] pr-2 min-h-0">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={tab}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25 }}
-          >
-            {tab === 'overview' && (
-              <div className="font-sans text-gray-400 leading-relaxed space-y-4">
-                {safeAbout.split('\n').filter(Boolean).map((p, i) => (
-                  <p key={i}>{p}</p>
-                ))}
-              </div>
-            )}
-
-            {tab === 'stack' && (
-              <div className="flex flex-col gap-2">
-                {safeTechStack.map(tech => (
-                  <div
-                    key={tech}
-                    className="flex items-center gap-4 px-4 py-3 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.04)] rounded-lg"
-                  >
-                    <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: project.accentColor }} />
-                    <span className="font-mono text-sm text-white tracking-widest uppercase">{tech}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {tab === 'review' && safeReview && (
-              <div className="relative pl-5 border-l-2" style={{ borderColor: project.accentColor }}>
-                <p className="text-xl font-display italic text-gray-300 leading-relaxed">
-                  &quot;{safeReview}&quot;
-                </p>
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      {/* CTAs — always pinned to bottom */}
-      <div className="mt-8 pt-6 border-t border-[rgba(255,255,255,0.05)] flex-shrink-0 flex flex-col sm:flex-row gap-3">
-        {project.liveUrl && (
-          <a
-            href={project.liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-white text-black text-sm font-bold font-sans rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            View Live Demo
-            <ExternalLinkIcon />
-          </a>
-        )}
-
-        {project.price > 0 && (
-          <button
-            onClick={onPurchase}
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 text-white text-sm font-bold font-sans rounded-lg transition-colors"
-            style={{ background: project.accentColor }}
-          >
-            Purchase Idea — ${project.price.toLocaleString()}
-          </button>
-        )}
-      </div>
+      {/* Top accent glow line */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[2px] z-10 pointer-events-none"
+        style={{ background: `linear-gradient(to right, transparent, ${accentColor}80, transparent)` }}
+      />
     </div>
   )
 }
 
-// ─── Main Overlay ────────────────────────────────────────────────────────────
+// ── Main Overlay ──────────────────────────────────────────────────────────────
 
 export function ProjectDetailOverlay({
   project,
   onClose,
 }: {
-  project: Project | null
+  project: Project
   onClose: () => void
 }) {
-  const [purchaseOpen, setPurchaseOpen] = useState(false)
+  const [isPurchaseOpen, setIsPurchaseOpen] = useState(false)
+  const hasImages = project.images && project.images.length > 0
 
-  // Esc key closes overlay
-  const handleKey = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    },
-    [onClose],
-  )
+  // Close on Escape key
   useEffect(() => {
-    if (project) {
-      document.addEventListener('keydown', handleKey)
-      document.body.style.overflow = 'hidden'
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
     }
-    return () => {
-      document.removeEventListener('keydown', handleKey)
-      document.body.style.overflow = ''
-    }
-  }, [project, handleKey])
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [onClose])
 
-  const isOpen = !!project
+  // Lock body scroll while open
+  useEffect(() => {
+    const original = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = original }
+  }, [])
+
+  // Parse newline-separated about text into paragraphs
+  const aboutParagraphs = project.about
+    .split('\n\n')
+    .map(p => p.trim())
+    .filter(Boolean)
 
   return (
     <>
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              key="backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={onClose}
-              className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm"
+      {/* ── Backdrop ──────────────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+        onClick={onClose}
+        className="fixed inset-0 z-[90] bg-black/75 backdrop-blur-md"
+        aria-label="Close overlay"
+      />
+
+      {/* ── Panel ─────────────────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0, y: '4%' }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: '3%' }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed inset-x-0 bottom-0 z-[91] flex flex-col bg-[#0f0f0f] border-t border-white/[0.06] overflow-hidden"
+        style={{ height: '92vh', maxHeight: '92vh' }}
+        aria-modal="true"
+        role="dialog"
+        aria-label={project.name}
+      >
+        {/* Top accent line */}
+        <div
+          className="absolute top-0 left-0 right-0 h-[2px] z-10 pointer-events-none"
+          style={{ background: `linear-gradient(to right, transparent, ${project.accentColor}, transparent)` }}
+        />
+
+        {/* ── Header bar ──────────────────────────────────── */}
+        <div className="relative z-10 flex items-center justify-between px-6 md:px-10 py-5 border-b border-white/[0.05] shrink-0">
+          <div className="flex items-center gap-3">
+            <span
+              className="block w-2 h-2 rounded-full"
+              style={{ background: project.accentColor, boxShadow: `0 0 8px ${project.accentColor}80` }}
             />
-
-            {/* Panel */}
-            <motion.div
-              key="panel"
-              initial={{ opacity: 0, y: 60, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 40, scale: 0.97 }}
-              transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-              className="fixed inset-x-4 top-[3vh] bottom-[3vh] z-[201] max-w-[1000px] mx-auto bg-[#0f0f0f] border border-[rgba(255,255,255,0.07)] rounded-2xl overflow-hidden flex flex-col shadow-2xl"
-              style={{ boxShadow: project ? `0 0 80px 0 ${project.accentColor}18` : undefined }}
+            <span
+              className="font-mono text-xs tracking-[0.2em] uppercase"
+              style={{ color: project.accentColor }}
             >
-              {/* Top bar */}
-              <div className="flex items-center justify-between px-8 py-5 border-b border-[rgba(255,255,255,0.05)] flex-shrink-0">
-                <div className="flex items-center gap-3">
-                  {project && (
-                    <span
-                      className="font-mono text-[10px] tracking-[0.25em] uppercase px-3 py-1 rounded-full border"
-                      style={{
-                        color: project.accentColor,
-                        borderColor: `${project.accentColor}30`,
-                        background: `${project.accentColor}0d`,
-                      }}
-                    >
-                      Project
-                    </span>
-                  )}
-                  {project && (
-                    <span className="font-sans text-sm text-gray-500">
-                      {project.name}
-                    </span>
-                  )}
-                </div>
-                <button
-                  onClick={onClose}
-                  className="text-gray-500 hover:text-white transition-colors p-2 rounded-lg hover:bg-[rgba(255,255,255,0.05)]"
-                >
-                  <CloseIcon />
-                </button>
-              </div>
+              Project Detail
+            </span>
+          </div>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="flex items-center justify-center w-9 h-9 rounded-full border border-white/[0.08] text-gray-500 hover:text-white hover:border-white/20 transition-all"
+          >
+            <CloseIcon />
+          </button>
+        </div>
 
-              {/* Body */}
-              <div className="flex-1 overflow-hidden p-8">
-                {project && (
-                  <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-10 h-full">
-                    <VisualPanel project={project} />
-                    <DetailsPanel project={project} onPurchase={() => setPurchaseOpen(true)} />
+        {/* ── Scrollable body ─────────────────────────────── */}
+        <div className="flex-1 overflow-y-auto overscroll-contain">
+          <div className="max-w-[1200px] mx-auto px-6 md:px-10 xl:px-16 py-10">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-10 lg:gap-16 items-start">
+
+              {/* LEFT: Media (images / video) */}
+              <div className="flex flex-col gap-4">
+                {hasImages ? (
+                  <ImageGallery
+                    images={project.images}
+                    name={project.name}
+                    accentColor={project.accentColor}
+                  />
+                ) : project.videoUrl ? (
+                  <div className="relative w-full aspect-video bg-[#0a0a0a] rounded-none overflow-hidden">
+                    <video
+                      src={project.videoUrl}
+                      controls
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                    <div
+                      className="absolute top-0 left-0 right-0 h-[2px] pointer-events-none"
+                      style={{ background: `linear-gradient(to right, transparent, ${project.accentColor}80, transparent)` }}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full aspect-video bg-[#111] flex items-center justify-center rounded-none border border-white/[0.04]">
+                    <span className="font-mono text-xs text-gray-700 tracking-widest">NO MEDIA</span>
                   </div>
                 )}
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
 
-      {/* Purchase Modal sits above the overlay */}
-      {project && (
-        <PurchaseModal
-          isOpen={purchaseOpen}
-          onClose={() => setPurchaseOpen(false)}
-          project={{ name: project.name, price: project.price, accentColor: project.accentColor }}
-        />
-      )}
+                {/* Tech stack — desktop: under image */}
+                <div className="hidden lg:flex flex-wrap gap-2 pt-2">
+                  {project.techStack.map(tag => (
+                    <span
+                      key={tag}
+                      className="text-[10px] px-2.5 py-1 border"
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        color: project.accentColor,
+                        borderColor: `${project.accentColor}35`,
+                        background: `${project.accentColor}0d`,
+                        letterSpacing: '0.06em',
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* RIGHT: Info panel */}
+              <div className="flex flex-col gap-8">
+
+                {/* Title + tagline */}
+                <div>
+                  <h2
+                    className="text-3xl md:text-4xl font-bold leading-tight mb-3"
+                    style={{ fontFamily: 'var(--font-sans)', color: project.accentColor }}
+                  >
+                    {project.name}
+                  </h2>
+                  <p
+                    className="text-base text-gray-400 leading-relaxed italic"
+                    style={{ fontFamily: 'var(--font-display)' }}
+                  >
+                    {project.tagline}
+                  </p>
+                </div>
+
+                {/* About text */}
+                <div className="flex flex-col gap-4">
+                  {aboutParagraphs.map((para, i) => (
+                    <p
+                      key={i}
+                      className="text-sm text-gray-500 leading-relaxed"
+                      style={{ fontFamily: 'var(--font-sans)' }}
+                    >
+                      {para}
+                    </p>
+                  ))}
+                </div>
+
+                {/* Tech stack — mobile: under about text */}
+                <div className="flex lg:hidden flex-wrap gap-2">
+                  {project.techStack.map(tag => (
+                    <span
+                      key={tag}
+                      className="text-[10px] px-2.5 py-1 border"
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        color: project.accentColor,
+                        borderColor: `${project.accentColor}35`,
+                        background: `${project.accentColor}0d`,
+                        letterSpacing: '0.06em',
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Review / testimonial */}
+                {project.review && (
+                  <blockquote
+                    className="border-l-2 pl-5 py-1"
+                    style={{ borderColor: `${project.accentColor}50` }}
+                  >
+                    <p
+                      className="text-sm italic text-gray-400 leading-relaxed"
+                      style={{ fontFamily: 'var(--font-display)' }}
+                    >
+                      &ldquo;{project.review}&rdquo;
+                    </p>
+                  </blockquote>
+                )}
+
+                {/* Divider */}
+                <div className="h-px bg-white/[0.05]" />
+
+                {/* CTA buttons */}
+                <div className="flex flex-col gap-3">
+                  {project.price > 0 && (
+                    <button
+                      onClick={() => setIsPurchaseOpen(true)}
+                      className="group w-full flex items-center justify-between px-6 py-4 text-sm font-semibold text-black transition-all duration-300"
+                      style={{ background: project.accentColor }}
+                    >
+                      <span className="font-mono tracking-widest uppercase text-xs">
+                        Purchase Idea
+                      </span>
+                      <span className="font-mono font-bold text-base">
+                        ${project.price.toLocaleString()}
+                      </span>
+                    </button>
+                  )}
+
+                  <div className="flex gap-3">
+                    {project.liveUrl && (
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 text-xs font-semibold tracking-[0.12em] uppercase border border-white/[0.1] text-white hover:border-white/30 hover:bg-white/[0.04] transition-all duration-300"
+                        style={{ fontFamily: 'var(--font-mono)' }}
+                      >
+                        Live Preview <ExternalLinkIcon />
+                      </a>
+                    )}
+                    {project.githubUrl && (
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 px-5 py-3.5 text-xs font-semibold tracking-[0.12em] uppercase border border-white/[0.1] text-white hover:border-white/30 hover:bg-white/[0.04] transition-all duration-300"
+                        style={{ fontFamily: 'var(--font-mono)' }}
+                        aria-label="View source on GitHub"
+                      >
+                        <GitHubIcon className="w-4 h-4" />
+                        {!project.liveUrl && <span>GitHub</span>}
+                      </a>
+                    )}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Purchase Modal */}
+      <PurchaseModal
+        isOpen={isPurchaseOpen}
+        onClose={() => setIsPurchaseOpen(false)}
+        project={{
+          name: project.name,
+          price: project.price,
+          accentColor: project.accentColor,
+        }}
+      />
     </>
   )
 }

@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { PROJECTS } from '@/data/projects'
+import { getProjects } from '@/lib/mdx'
 import { ProjectsClient } from './ProjectsClient'
 
 export const metadata: Metadata = {
@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   description: 'A collection of projects spanning frontend UI engineering to full-stack applications.',
 }
 
-export default function ProjectsPage() {
-  return <ProjectsClient projects={PROJECTS} />
+export default async function ProjectsPage() {
+  const projects = getProjects()
+  return <ProjectsClient projects={projects} />
 }

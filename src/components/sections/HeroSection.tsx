@@ -189,7 +189,7 @@ export function HeroSection() {
                 <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
               </div>
               <div className="relative group overflow-hidden rounded-xl">
-                <img src="/images/hero_ai.jpg" alt="" className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out" />
+                <img src="/images/projects/motion-reel.jpg" alt="" className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out" />
                 <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
               </div>
             </div>

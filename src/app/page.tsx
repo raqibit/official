@@ -5,14 +5,18 @@ import { FeaturedProjects } from '@/components/sections/FeaturedProjects'
 import { ContactSection } from '@/components/sections/ContactSection'
 
 import { BookQuoteSection } from '@/components/sections/BookQuoteSection'
+import { getProjects } from '@/lib/mdx'
 
-export default function Home() {
+export default async function Home() {
+  const allProjects = getProjects()
+  const featuredProjects = allProjects.slice(0, 3)
+
   return (
     <>
       <HeroSection />
       <SkillsSection />
       <StudioSection />
-      <FeaturedProjects />
+      <FeaturedProjects projects={featuredProjects} />
       <ContactSection />
       <BookQuoteSection />
     </>

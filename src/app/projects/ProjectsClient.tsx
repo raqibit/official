@@ -1,145 +1,218 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
-import { type Project as ProjectType } from '@/data/projects'
+import { type Project as ProjectType } from '@/lib/mdx'
 import { ProjectDetailOverlay } from '@/components/overlays/ProjectDetailOverlay'
+import { ArrowIcon } from '@/components/icons'
 
-type ProjectSummary = ProjectType
+// ── Shuffle (client-only, SSR-safe) ───────────────────────────────────────────
 
-function ArrowIcon() {
-  return (
-    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-    </svg>
-  )
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
 }
 
-function ProjectCard({
+// ── ProjectCard ───────────────────────────────────────────────────────────────
+
+const ProjectCard = memo(function ProjectCard({
   project,
   index,
   onClick,
 }: {
-  project: ProjectSummary
+  project: ProjectType
   index: number
   onClick: () => void
 }) {
   const [isHovered, setIsHovered] = useState(false)
-  const mainImage = project.images && project.images.length > 0 ? project.images[0] : null
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const mainImage = project.images.length > 0 ? project.images[0] : null
+
+  // Play/pause video on hover (only when no static image)
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || mainImage) return
+    if (isHovered) {
+      video.play().catch(() => {})
+    } else {
+      video.pause()
+    }
+  }, [isHovered, mainImage])
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.55, delay: index * 0.07 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 0.55, delay: (index % 3) * 0.08 }}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={onClick}
-      className="group relative flex flex-col justify-end bg-[#111] border border-[rgba(255,255,255,0.06)] hover:border-[rgba(255,255,255,0.15)] transition-all duration-500 overflow-hidden cursor-pointer min-h-[350px] rounded-2xl"
+      className={`group relative overflow-hidden cursor-pointer rounded-2xl bg-[#111] ${
+        project.wide 
+          ? 'sm:col-span-2 aspect-[16/9] sm:aspect-[2/1] lg:aspect-[16/9]' 
+          : 'col-span-1 aspect-[4/3]'
+      }`}
     >
-      {/* Background Image */}
+      {/* ── Full-bleed media layer (always covers 100% of card) ─── */}
       {mainImage ? (
-        <div className="absolute inset-0 z-0">
-          <Image src={mainImage} alt={project.name} fill className="object-cover opacity-60 group-hover:opacity-20 transition-opacity duration-500" />
-        </div>
+        <Image
+          src={mainImage}
+          alt={project.name}
+          fill
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
+      ) : project.videoUrl ? (
+        <video
+          ref={videoRef}
+          src={project.videoUrl}
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+        />
       ) : (
-        <div className="absolute inset-0 z-0 bg-[#0d0d0d] flex items-center justify-center opacity-60 group-hover:opacity-20 transition-opacity duration-500">
-          <span className="font-mono text-xs text-gray-700 tracking-widest">NO IMAGE</span>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span
+            className="font-mono text-xs tracking-widest"
+            style={{ color: `${project.accentColor}40` }}
+          >
+            {project.name.toUpperCase()}
+          </span>
         </div>
       )}
 
-      {/* Video background on hover */}
+      {/* ── Hover video overlay (when static image exists) ────────── */}
       <AnimatePresence>
-        {isHovered && project.videoUrl && (
-          <motion.div
+        {isHovered && project.videoUrl && mainImage && (
+          <motion.video
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.6 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-0 pointer-events-none"
-          >
-            <video
-              src={project.videoUrl}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
+            transition={{ duration: 0.5 }}
+            src={project.videoUrl}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          />
         )}
       </AnimatePresence>
 
-      {/* Bottom Gradient for Text Readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none z-0" />
+      {/* ── Permanent gradient — darkens bottom so text is always readable ── */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/0 pointer-events-none" />
 
-      {/* Top glow */}
+      {/* ── Hover dim — darkens whole card slightly on hover ─────── */}
       <div
-        className="absolute top-0 left-0 right-0 h-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"
-        style={{ background: `linear-gradient(to right, transparent, ${project.accentColor}, transparent)` }}
-      />
-      {/* Corner dot */}
-      <div
-        className="absolute top-6 right-6 w-2 h-2 rounded-full opacity-40 group-hover:opacity-100 transition-opacity z-10 pointer-events-none"
-        style={{ background: project.accentColor }}
+        className="absolute inset-0 transition-opacity duration-500 pointer-events-none"
+        style={{
+          opacity: isHovered ? 1 : 0,
+          background: 'linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.1) 100%)',
+        }}
       />
 
-      {/* Content */}
-      <motion.div 
-        className="p-8 z-10 relative flex flex-col justify-end h-full"
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: isHovered ? 0 : 20, opacity: isHovered ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
-      >
+      {/* ── Accent top-border glow on hover ──────────────────────── */}
+      <div
+        className="absolute top-0 inset-x-0 h-[2px] pointer-events-none transition-opacity duration-500"
+        style={{
+          opacity: isHovered ? 1 : 0,
+          background: `linear-gradient(to right, transparent, ${project.accentColor}, transparent)`,
+        }}
+      />
+
+      {/* ── Accent corner dot ─────────────────────────────────────── */}
+      <div
+        className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full pointer-events-none transition-opacity duration-500"
+        style={{
+          background: project.accentColor,
+          opacity: isHovered ? 1 : 0.5,
+          boxShadow: isHovered ? `0 0 8px ${project.accentColor}` : 'none',
+        }}
+      />
+
+      {/* ── Text content — always pinned to bottom ────────────────── */}
+      <div className="absolute inset-x-0 bottom-0 p-5 md:p-6 flex flex-col gap-2">
+
+        {/* Project name — always visible */}
         <h3
-          className="text-2xl font-bold mb-3 transition-colors duration-300"
+          className="text-base md:text-lg font-bold leading-snug tracking-tight"
           style={{ fontFamily: 'var(--font-sans)', color: project.accentColor }}
         >
           {project.name}
         </h3>
-        <p className="text-sm text-gray-300 leading-relaxed mb-6" style={{ fontFamily: 'var(--font-sans)' }}>
-          {project.tagline}
-        </p>
-        
-        <div className="flex items-center justify-between">
-          <div className="flex flex-wrap gap-2">
-            {project.techStack.slice(0, 3).map(tag => (
-              <span
-                key={tag}
-                className="text-[10px] px-2 py-0.5 border"
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  color: project.accentColor,
-                  borderColor: `${project.accentColor}30`,
-                  background: `${project.accentColor}0a`,
-                  letterSpacing: '0.05em',
-                }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-          <div
-            className="flex items-center gap-1.5 text-xs text-white transition-colors"
-            style={{ fontFamily: 'var(--font-mono)' }}
+
+        {/* Tagline + tech + VIEW — revealed on hover */}
+        <motion.div
+          initial={false}
+          animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 6 }}
+          transition={{ duration: 0.22, ease: 'easeOut' }}
+          className="flex flex-col gap-2.5"
+          aria-hidden={!isHovered}
+        >
+          <p
+            className="text-[11px] md:text-xs text-gray-300 leading-relaxed line-clamp-2"
+            style={{ fontFamily: 'var(--font-sans)' }}
           >
-            VIEW <ArrowIcon />
+            {project.tagline}
+          </p>
+
+          <div className="flex items-center justify-between">
+            {/* Tech tags — up to 3 */}
+            <div className="flex flex-wrap gap-1.5">
+              {project.techStack.slice(0, 3).map(tag => (
+                <span
+                  key={tag}
+                  className="text-[9px] px-1.5 py-0.5 rounded-sm border"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    color: project.accentColor,
+                    borderColor: `${project.accentColor}50`,
+                    background: `${project.accentColor}15`,
+                    letterSpacing: '0.06em',
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            {/* VIEW label */}
+            <span
+              className="flex items-center gap-1 text-[10px] text-white/80"
+              style={{ fontFamily: 'var(--font-mono)' }}
+            >
+              OPEN <ArrowIcon className="h-3 w-3" />
+            </span>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </motion.div>
   )
-}
+})
+
+// ── ProjectsClient ────────────────────────────────────────────────────────────
 
 export function ProjectsClient({ projects }: { projects: ProjectType[] }) {
   const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null)
 
+  // SSR-safe shuffle: start with original server-rendered order,
+  // shuffle only after client hydration completes (no mismatch).
+  const [displayProjects, setDisplayProjects] = useState<ProjectType[]>(projects)
+  useEffect(() => {
+    setDisplayProjects(shuffle(projects))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] pt-32 pb-28">
-
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12 xl:px-20">
 
-        {/* Page Header */}
+        {/* ── Page Header ─────────────────────────────── */}
         <div className="mb-20 max-w-2xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -172,9 +245,9 @@ export function ProjectsClient({ projects }: { projects: ProjectType[] }) {
           </motion.p>
         </div>
 
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, index) => (
+        {/* ── Projects Grid ───────────────────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 grid-flow-row-dense">
+          {displayProjects.map((project, index) => (
             <ProjectCard
               key={project.id}
               project={project}
@@ -186,12 +259,12 @@ export function ProjectsClient({ projects }: { projects: ProjectType[] }) {
 
       </div>
 
-      {/* Project Detail Overlay */}
+      {/* ── Project Detail Overlay ───────────────────── */}
       <AnimatePresence>
         {selectedProject && (
-          <ProjectDetailOverlay 
-            project={selectedProject} 
-            onClose={() => setSelectedProject(null)} 
+          <ProjectDetailOverlay
+            project={selectedProject}
+            onClose={() => setSelectedProject(null)}
           />
         )}
       </AnimatePresence>

@@ -5,7 +5,6 @@ import {
   LinkedInIcon,
   XIcon,
 } from '@/components/layout/SocialIcons'
-import { ContainerOuter, ContainerInner } from '@/components/layout/Container'
 
 const pageLinks = [
   { href: '/', label: 'Home' },
@@ -23,53 +22,87 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="mt-32 flex-none">
-      <ContainerOuter>
-        <div className="border-t border-zinc-800 pb-16 pt-10">
-          <ContainerInner>
-            <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-              {/* Copyright */}
-              <div className="flex flex-col gap-1">
-                <p className="text-sm text-zinc-400">
-                  &copy; {new Date().getFullYear()} Roqeeb Ismail. All rights reserved.
-                </p>
-                <p className="text-xs text-zinc-600 font-mono">
-                  Software · Design · Hardware
-                </p>
-              </div>
+    <footer className="relative mt-auto flex-none border-t border-white/[0.04] bg-[#080808]">
+      {/* Subtle top glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-px"
+        style={{ background: 'linear-gradient(to right, transparent, rgba(0,229,255,0.12), transparent)' }}
+      />
 
-              {/* Nav links */}
-              <nav className="flex flex-wrap justify-center gap-6">
-                {pageLinks.map(({ href, label }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    className="text-sm text-zinc-500 hover:text-white transition-colors"
-                  >
-                    {label}
-                  </Link>
-                ))}
-              </nav>
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-12 xl:px-20 py-12">
 
-              {/* Social icons */}
-              <div className="flex gap-3">
-                {socialLinks.map(({ href, icon: Icon, label }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className="group flex items-center justify-center w-8 h-8 rounded-full border border-zinc-800 hover:border-[#00e5ff]/40 hover:bg-[#00e5ff]/5 transition-all"
-                  >
-                    <Icon className="h-4 w-4 fill-zinc-500 group-hover:fill-[#00e5ff] transition-colors" />
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </ContainerInner>
+        {/* Top row: brand + nav + socials */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 mb-10">
+
+          {/* Brand */}
+          <div className="flex flex-col gap-1">
+            <span
+              className="text-white font-bold tracking-tight text-sm"
+              style={{ fontFamily: 'var(--font-sans)' }}
+            >
+              Roqeeb Ismail
+            </span>
+            <span
+              className="font-mono text-[10px] tracking-[0.2em] uppercase text-gray-700"
+            >
+              Software · Design · Hardware
+            </span>
+          </div>
+
+          {/* Nav */}
+          <nav className="flex flex-wrap gap-x-8 gap-y-2">
+            {pageLinks.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="text-xs text-gray-600 hover:text-white transition-colors duration-300 tracking-wide"
+                style={{ fontFamily: 'var(--font-mono)' }}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Socials */}
+          <div className="flex gap-2.5">
+            {socialLinks.map(({ href, icon: Icon, label }) => (
+              <Link
+                key={href}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="group flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.06] hover:border-[#00e5ff]/40 hover:bg-[#00e5ff]/5 transition-all duration-300"
+              >
+                <Icon className="h-3.5 w-3.5 fill-gray-600 group-hover:fill-[#00e5ff] transition-colors duration-300" />
+              </Link>
+            ))}
+          </div>
         </div>
-      </ContainerOuter>
+
+        {/* Divider */}
+        <div className="h-px bg-white/[0.04] mb-8" />
+
+        {/* Bottom row */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <p
+            className="text-[11px] text-gray-700 font-mono tracking-wide"
+          >
+            &copy; 2025 Roqeeb Ismail. All rights reserved.
+          </p>
+
+          <div className="flex items-center gap-1.5">
+            <span className="block w-1.5 h-1.5 rounded-full bg-[#00e5ff] animate-pulse" />
+            <span
+              className="text-[11px] text-gray-700 font-mono tracking-wide"
+            >
+              Lagos, Nigeria · UTC+1
+            </span>
+          </div>
+        </div>
+
+      </div>
     </footer>
   )
 }

@@ -3,81 +3,21 @@
 /**
  * FeaturedProjects
  * ─────────────────────────────────────────────────────────────────────────────
- * Fetches live projects from /api/projects and renders them in a bento grid:
- *  - First project: full 3-column width (featured)
- *  - Next two: 1-column each side-by-side
- *  - Remaining: standard cards
- *
- * If the database is empty, renders 3 placeholder cards so the section
- * is never visually empty.
- *
- * Project cards support:
- *  - Hover video background (muted autoplay)
- *  - Accent colour glow line at top
- *  - ProjectDetailOverlay on click
+ * Homepage bento grid — first 3 projects from static PROJECTS data.
+ * Cards show full-bleed project images with editorial overlay text.
+ * Clicking opens ProjectDetailOverlay.
  */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { PROJECTS } from '@/data/projects'
+import { type Project } from '@/lib/mdx'
+import { ProjectDetailOverlay } from '@/components/overlays/ProjectDetailOverlay'
+import { ArrowIcon } from '@/components/icons'
 
-// ── Types ─────────────────────────────────────────────────────────────────────
-type ProjectSummary = {
-  id: string
-  name: string
-  tagline: string
-  videoUrl: string
-  images?: string[]
-  techStack: string[]
-  accentColor: string
-}
+// ── Section Header ────────────────────────────────────────────────────────────
 
-// ── Placeholder data (shown when DB is empty) ─────────────────────────────────
-const PLACEHOLDER_PROJECTS: ProjectSummary[] = [
-  {
-    id: 'ph1',
-    name: 'Prime Portfolio',
-    tagline: 'This very site — built with Next.js, Prisma, Three.js, and Framer Motion.',
-    accentColor: '#00e5ff',
-    techStack: ['Next.js', 'TypeScript', 'Prisma'],
-    videoUrl: '',
-  },
-  {
-    id: 'ph2',
-    name: 'Analytics Engine',
-    tagline: 'Real-time analytics engine and dashboard for enterprise infrastructure.',
-    accentColor: '#7c3aed',
-    techStack: ['React', 'WebGL', 'Three.js'],
-    videoUrl: '',
-  },
-  {
-    id: 'ph3',
-    name: 'Design System',
-    tagline: 'A component library and design token system for rapid UI development.',
-    accentColor: '#f59e0b',
-    techStack: ['Tailwind', 'Storybook', 'Figma'],
-    videoUrl: '',
-  },
-]
-
-// ── Arrow icon ────────────────────────────────────────────────────────────────
-function ArrowIcon() {
-  return (
-    <svg
-      className="h-4 w-4"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={1.5}
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-    </svg>
-  )
-}
-
-// ── Section header (shared between empty + live states) ───────────────────────
 function SectionHeader({ showAllLink }: { showAllLink?: boolean }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-16">
@@ -85,7 +25,7 @@ function SectionHeader({ showAllLink }: { showAllLink?: boolean }) {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: '-100px' }}
           className="flex items-center gap-4 mb-4"
         >
           <span className="block h-px w-8 bg-gray-700" />
@@ -99,7 +39,7 @@ function SectionHeader({ showAllLink }: { showAllLink?: boolean }) {
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: '-100px' }}
           className="text-4xl sm:text-5xl font-bold text-white"
           style={{ fontFamily: 'var(--font-sans)' }}
         >
@@ -115,7 +55,7 @@ function SectionHeader({ showAllLink }: { showAllLink?: boolean }) {
         >
           <Link
             href="/projects"
-            className="group inline-flex items-center gap-2 text-sm text-gray-500 hover:text-white transition-colors"
+            className="group inline-flex items-center gap-2 text-sm text-gray-500 hover:text-white transition-colors duration-300"
             style={{ fontFamily: 'var(--font-mono)', letterSpacing: '0.05em' }}
           >
             ALL PROJECTS
@@ -127,155 +67,185 @@ function SectionHeader({ showAllLink }: { showAllLink?: boolean }) {
   )
 }
 
-// ── Project card ──────────────────────────────────────────────────────────────
+// ── Project Card ──────────────────────────────────────────────────────────────
+
 function ProjectCard({
   project,
   className = '',
   index,
+  featured = false,
   onClick,
 }: {
-  project: ProjectSummary
+  project: Project
   className?: string
   index: number
+  featured?: boolean
   onClick: () => void
 }) {
   const [isHovered, setIsHovered] = useState(false)
+  const mainImage = project.images.length > 0 ? project.images[0] : null
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.6, delay: index * 0.08 }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
-      className={`group relative flex flex-col justify-between bg-[#111] border border-white/[0.06] hover:border-white/[0.15] transition-all duration-500 overflow-hidden cursor-pointer ${className}`}
+      className={`group relative overflow-hidden cursor-pointer bg-[#111] ${className}`}
+      style={{ minHeight: featured ? '420px' : '280px' }}
     >
-      {/* Hover video background — muted autoplay */}
+      {/* ── Full-bleed image background ────────────────────── */}
+      {mainImage && (
+        <>
+          <Image
+            src={mainImage}
+            alt={project.name}
+            fill
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            sizes="(max-width: 1024px) 100vw, 66vw"
+          />
+          {/* Base dark overlay so text is always readable */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/20" />
+        </>
+      )}
+
+      {/* Hover video overlay */}
       <AnimatePresence>
         {isHovered && project.videoUrl && (
-          <motion.div
+          <motion.video
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.15 }}
+            animate={{ opacity: 0.35 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-0 pointer-events-none"
-          >
-            <video
-              src={project.videoUrl}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
+            transition={{ duration: 0.6 }}
+            src={project.videoUrl}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          />
         )}
       </AnimatePresence>
 
-      {/* Accent glow line at top on hover */}
+      {/* Accent glow line at top */}
       <div
-        className="absolute top-0 left-0 right-0 h-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"
-        style={{ background: `linear-gradient(to right, transparent, ${project.accentColor}, transparent)` }}
+        className="absolute top-0 inset-x-0 h-[1px] pointer-events-none transition-opacity duration-500"
+        style={{
+          opacity: isHovered ? 1 : 0,
+          background: `linear-gradient(to right, transparent, ${project.accentColor}, transparent)`,
+        }}
       />
 
       {/* Corner accent dot */}
       <div
-        className="absolute top-6 right-6 w-2 h-2 rounded-full opacity-40 group-hover:opacity-100 transition-opacity z-10 pointer-events-none"
-        style={{ background: project.accentColor }}
+        className="absolute top-5 right-5 w-1.5 h-1.5 rounded-full pointer-events-none transition-all duration-500"
+        style={{
+          background: project.accentColor,
+          opacity: isHovered ? 1 : 0.5,
+          boxShadow: isHovered ? `0 0 8px ${project.accentColor}` : 'none',
+        }}
       />
 
-      {/* Card content */}
-      <div className="p-8 z-10 relative">
+      {/* Hover dim enhancement */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-opacity duration-500"
+        style={{ opacity: isHovered ? 1 : 0, background: 'rgba(0,0,0,0.25)' }}
+      />
+
+      {/* ── Content ───────────────────────────────────────── */}
+      <div className="absolute inset-x-0 bottom-0 p-7 flex flex-col gap-3 z-10">
+        {/* Index number — editorial detail */}
+        <span
+          className="font-mono text-[9px] tracking-[0.3em] uppercase transition-colors duration-300"
+          style={{ color: `${project.accentColor}80` }}
+        >
+          {String(index + 1).padStart(2, '0')}
+        </span>
+
+        {/* Project name */}
         <h3
-          className="text-xl font-bold text-white mb-3 transition-colors duration-300"
+          className="font-bold leading-tight transition-colors duration-300"
           style={{
             fontFamily: 'var(--font-sans)',
-            color: isHovered ? project.accentColor : 'white',
+            fontSize: featured ? '1.5rem' : '1.1rem',
+            color: project.accentColor,
           }}
         >
           {project.name}
         </h3>
-        <p
-          className="text-sm text-gray-500 leading-relaxed mb-6"
+
+        {/* Tagline — revealed on hover */}
+        <motion.p
+          initial={false}
+          animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 6 }}
+          transition={{ duration: 0.22 }}
+          className="text-xs text-gray-300 leading-relaxed line-clamp-2 max-w-lg"
           style={{ fontFamily: 'var(--font-sans)' }}
         >
           {project.tagline}
-        </p>
-      </div>
+        </motion.p>
 
-      {/* Card footer: tech stack + VIEW arrow */}
-      <div className="p-8 pt-0 flex items-center justify-between z-10 relative">
-        <div className="flex flex-wrap gap-2">
-          {project.techStack.map((tag) => (
-            <span
-              key={tag}
-              className="text-[10px] px-2 py-0.5 border"
-              style={{
-                fontFamily: 'var(--font-mono)',
-                color: project.accentColor,
-                borderColor: `${project.accentColor}30`,
-                background: `${project.accentColor}0a`,
-                letterSpacing: '0.05em',
-              }}
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-        <div
-          className="flex items-center gap-1.5 text-xs text-gray-600 group-hover:text-white transition-colors opacity-0 group-hover:opacity-100"
-          style={{ fontFamily: 'var(--font-mono)' }}
-        >
-          VIEW <ArrowIcon />
+        {/* Footer row: tech tags + VIEW */}
+        <div className="flex items-center justify-between pt-1">
+          <div className="flex flex-wrap gap-1.5">
+            {project.techStack.slice(0, featured ? 4 : 2).map(tag => (
+              <span
+                key={tag}
+                className="text-[9px] px-1.5 py-0.5 border rounded-sm"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  color: project.accentColor,
+                  borderColor: `${project.accentColor}45`,
+                  background: `${project.accentColor}12`,
+                  letterSpacing: '0.06em',
+                }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          <motion.span
+            initial={false}
+            animate={{ opacity: isHovered ? 1 : 0 }}
+            transition={{ duration: 0.2 }}
+            className="flex items-center gap-1 text-[10px] text-white/70 shrink-0"
+            style={{ fontFamily: 'var(--font-mono)' }}
+          >
+            VIEW <ArrowIcon className="h-3 w-3" />
+          </motion.span>
         </div>
       </div>
     </motion.div>
   )
 }
 
-// ── Main component ────────────────────────────────────────────────────────────
-export function FeaturedProjects() {
-  const router = useRouter()
+// ── Main Component ────────────────────────────────────────────────────────────
 
-  // Use the static projects data directly
-  // We grab the first 3 projects to feature on the homepage
-  const projects = PROJECTS.slice(0, 3)
+export function FeaturedProjects({ projects }: { projects: Project[] }) {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  
+  if (!projects || projects.length === 0) return null
 
-  // ── Empty state: show placeholder bento ───────────────────────────────────
-  if (projects.length === 0) {
-    return (
-      <section id="projects" className="py-28 sm:py-36 bg-[#0a0a0a]">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 xl:px-20">
-          <SectionHeader />
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-white/[0.04]">
-            <ProjectCard project={PLACEHOLDER_PROJECTS[0]} className="lg:col-span-3" index={0} onClick={() => {}} />
-            <ProjectCard project={PLACEHOLDER_PROJECTS[1]} className="lg:col-span-1" index={1} onClick={() => {}} />
-            <ProjectCard project={PLACEHOLDER_PROJECTS[2]} className="lg:col-span-2" index={2} onClick={() => {}} />
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  // ── Live data: bento layout ────────────────────────────────────────────────
-  const p1 = projects[0]
-  const p2 = projects[1]
-  const p3 = projects[2]
+  const [p1, p2, p3] = projects
 
   return (
     <section id="projects" className="py-28 sm:py-36 bg-[#0a0a0a]">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12 xl:px-20">
         <SectionHeader showAllLink />
 
-        {/* Bento grid for 3 items */}
+        {/* Bento grid — full-bleed image cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-white/[0.04]">
           {p1 && (
             <ProjectCard
               project={p1}
               className="lg:col-span-3"
               index={0}
-              onClick={() => router.push('/projects')}
+              featured
+              onClick={() => setSelectedProject(p1)}
             />
           )}
           {p2 && (
@@ -283,7 +253,7 @@ export function FeaturedProjects() {
               project={p2}
               className="lg:col-span-1"
               index={1}
-              onClick={() => router.push('/projects')}
+              onClick={() => setSelectedProject(p2)}
             />
           )}
           {p3 && (
@@ -291,11 +261,21 @@ export function FeaturedProjects() {
               project={p3}
               className="lg:col-span-2"
               index={2}
-              onClick={() => router.push('/projects')}
+              onClick={() => setSelectedProject(p3)}
             />
           )}
         </div>
       </div>
+
+      {/* Project Detail Overlay */}
+      <AnimatePresence>
+        {selectedProject && (
+          <ProjectDetailOverlay
+            project={selectedProject}
+            onClose={() => setSelectedProject(null)}
+          />
+        )}
+      </AnimatePresence>
     </section>
   )
 }

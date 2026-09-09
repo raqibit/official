@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { clamp } from '@/lib/utils'
 import {
   Popover,
   PopoverButton,
@@ -132,12 +133,6 @@ function DesktopNavigation(props: React.ComponentPropsWithoutRef<'nav'>) {
 
 // ── Avatar ────────────────────────────────────────────────────────────────────
 
-function clamp(number: number, a: number, b: number) {
-  const min = Math.min(a, b)
-  const max = Math.max(a, b)
-  return Math.min(Math.max(number, min), max)
-}
-
 function AvatarContainer({
   className,
   ...props
@@ -194,8 +189,8 @@ function Avatar({
 export function Header() {
   const isHomePage = usePathname() === '/'
 
-  const headerRef = useRef<React.ElementRef<'div'>>(null)
-  const avatarRef = useRef<React.ElementRef<'div'>>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const avatarRef = useRef<HTMLDivElement>(null)
   const isInitial = useRef(true)
 
   useEffect(() => {
