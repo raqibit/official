@@ -42,7 +42,7 @@ const ProjectCard = memo(function ProjectCard({
       onMouseEnter={() => setIsHovered(true)}
       className={`group relative overflow-hidden cursor-pointer rounded-2xl bg-[#111] ${
         project.wide 
-          ? 'sm:col-span-2 aspect-[16/9] sm:aspect-[2/1] lg:aspect-[16/9]' 
+          ? 'sm:col-span-2 aspect-[4/3]' 
           : 'col-span-1 aspect-[4/3]'
       }`}
     >
