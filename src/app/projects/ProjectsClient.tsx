@@ -7,17 +7,6 @@ import { type Project as ProjectType } from '@/lib/mdx'
 import { ProjectDetailOverlay } from '@/components/overlays/ProjectDetailOverlay'
 import { ArrowIcon } from '@/components/icons'
 
-// ── Shuffle (client-only, SSR-safe) ───────────────────────────────────────────
-
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr]
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-      ;[a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
-}
-
 // ── ProjectCard ───────────────────────────────────────────────────────────────
 
 const ProjectCard = memo(function ProjectCard({
@@ -25,6 +14,7 @@ const ProjectCard = memo(function ProjectCard({
   index,
   onClick,
 }: {
+
   project: ProjectType
   index: number
   onClick: () => void
@@ -53,11 +43,10 @@ const ProjectCard = memo(function ProjectCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
-      className={`group relative overflow-hidden cursor-pointer rounded-2xl bg-[#111] ${
-        project.wide
+      className={`group relative overflow-hidden cursor-pointer rounded-2xl bg-[#111] ${project.wide
           ? 'sm:col-span-2 aspect-[16/9] sm:aspect-auto sm:h-full'
           : 'col-span-1 aspect-[4/3]'
-      }`}
+        }`}
     >
       {/* ── Full-bleed media layer (always covers 100% of card) ─── */}
       {mainImage ? (
@@ -202,13 +191,8 @@ const ProjectCard = memo(function ProjectCard({
 export function ProjectsClient({ projects }: { projects: ProjectType[] }) {
   const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null)
 
-  // SSR-safe shuffle: start with original server-rendered order,
-  // shuffle only after client hydration completes (no mismatch).
-  const [displayProjects, setDisplayProjects] = useState<ProjectType[]>(projects)
-  useEffect(() => {
-    setDisplayProjects(shuffle(projects))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // Use server-side sorted order to guarantee wide cards sit in correct grid positions
+  const displayProjects = projects
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] pt-32 pb-28">
@@ -248,7 +232,7 @@ export function ProjectsClient({ projects }: { projects: ProjectType[] }) {
         </div>
 
         {/* ── Projects Grid ───────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 grid-flow-row-dense">
           {displayProjects.map((project, index) => (
             <ProjectCard
               key={project.id}
