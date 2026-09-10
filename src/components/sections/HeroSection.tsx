@@ -152,7 +152,7 @@ export function HeroSection() {
             variants={imageVariant}
             initial="hidden"
             animate="show"
-            className="mt-14 flex justify-end gap-6 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0 relative"
+            className="mt-14 flex justify-center gap-4 sm:-mt-44 sm:justify-start sm:gap-6 sm:pl-20 lg:mt-0 lg:pl-0 relative"
           >
             {/* Floating CV Link */}
             <div className="absolute -top-12 right-0 hidden lg:block">
@@ -169,13 +169,13 @@ export function HeroSection() {
               </a>
             </div>
 
-            <div className="ml-auto w-44 flex-none space-y-6 pt-32 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-0 xl:pt-80">
+            <div className="w-24 sm:w-32 lg:w-44 flex-none space-y-4 sm:space-y-6 pt-16 sm:pt-80 lg:order-last lg:pt-36 xl:order-0 xl:pt-80">
               <div className="relative group overflow-hidden rounded-xl">
                 <img src="/images/hero_software.jpg" alt="" className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out" />
                 <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
               </div>
             </div>
-            <div className="mr-auto w-44 flex-none space-y-6 sm:mr-0 sm:pt-52 lg:pt-36">
+            <div className="w-24 sm:w-32 lg:w-44 flex-none space-y-4 sm:space-y-6 sm:pt-52 lg:pt-36">
               <div className="relative group overflow-hidden rounded-xl">
                 <img src="/images/hero_hardware.jpg" alt="" className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out" />
                 <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
@@ -185,7 +185,7 @@ export function HeroSection() {
                 <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
               </div>
             </div>
-            <div className="w-44 flex-none space-y-6 pt-32 sm:pt-0">
+            <div className="w-24 sm:w-32 lg:w-44 flex-none space-y-4 sm:space-y-6 pt-16 sm:pt-0">
               <div className="relative group overflow-hidden rounded-xl">
                 <img src="/images/hero_workspace.jpg" alt="" className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out" />
                 <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
