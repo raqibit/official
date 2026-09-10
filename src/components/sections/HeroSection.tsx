@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { motion, type Variants } from 'framer-motion'
 import { useState } from 'react'
-import { ContactModal } from '@/components/ui/ContactModal'
 import {
   GitHubIcon,
   InstagramIcon,
@@ -54,7 +53,6 @@ function SocialLink({
 }
 
 export function HeroSection() {
-  const [isContactOpen, setIsContactOpen] = useState(false)
 
   return (
     <section className="relative min-h-[calc(100vh-80px)] flex items-center overflow-hidden">
@@ -114,13 +112,15 @@ export function HeroSection() {
                 </svg>
               </Link>
 
-              <button
-                onClick={() => setIsContactOpen(true)}
+              <a
+                href="/rq-ismail-resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
                 data-cursor="VIEW"
                 className="inline-flex items-center gap-3 px-8 py-4 text-xs font-semibold tracking-[0.15em] uppercase text-gray-400 border border-white/[0.05] hover:border-white/20 hover:text-white transition-all duration-500"
               >
-                Contact Me
-              </button>
+                Resume
+              </a>
             </motion.div>
 
             <motion.div variants={item} className="flex items-center gap-5">
@@ -154,17 +154,19 @@ export function HeroSection() {
             animate="show"
             className="mt-14 flex justify-end gap-6 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0 relative"
           >
-            {/* Floating Contact Link */}
+            {/* Floating Resume Link */}
             <div className="absolute -top-12 right-0 hidden lg:block">
-              <button
-                onClick={() => setIsContactOpen(true)}
+              <a
+                href="/rq-ismail-resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group flex items-center gap-2 text-[10px] font-mono tracking-[0.2em] uppercase text-gray-500 hover:text-white transition-colors"
               >
-                Contact Me
+                Resume
                 <svg className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
                 </svg>
-              </button>
+              </a>
             </div>
 
             <div className="ml-auto w-44 flex-none space-y-6 pt-32 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-0 xl:pt-80">
@@ -197,8 +199,6 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* ── Contact Modal Overlay ── */}
-      <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
     </section>
   )
 }
