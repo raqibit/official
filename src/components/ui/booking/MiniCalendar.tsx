@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
 export function MiniCalendar({ selected, onSelect }: { selected: Date | null, onSelect: (d: Date) => void }) {
-  const [currentMonth, setCurrentMonth] = useState(new Date())
+  // Initialize calendar view to the selected date's month, or the current month
+  const [currentMonth, setCurrentMonth] = useState(selected || new Date())
 
   const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate()
   const getFirstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay()
@@ -17,14 +18,26 @@ export function MiniCalendar({ selected, onSelect }: { selected: Date | null, on
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
-  const handlePrevMonth = () => setCurrentMonth(new Date(year, month - 1, 1))
+  const isCurrentMonth = year === today.getFullYear() && month === today.getMonth()
+
+  const handlePrevMonth = () => {
+    if (!isCurrentMonth) {
+      setCurrentMonth(new Date(year, month - 1, 1))
+    }
+  }
   const handleNextMonth = () => setCurrentMonth(new Date(year, month + 1, 1))
 
   return (
     <div className="w-full bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <button onClick={handlePrevMonth} className="p-2 hover:bg-white/[0.05] rounded-lg transition-colors text-zinc-400">
+        <button 
+          onClick={handlePrevMonth} 
+          disabled={isCurrentMonth}
+          className={`p-2 rounded-lg transition-colors ${
+            isCurrentMonth ? 'text-zinc-700 cursor-not-allowed' : 'hover:bg-white/[0.05] text-zinc-400'
+          }`}
+        >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
         </button>
         <span className="text-white font-mono text-sm tracking-widest uppercase">
