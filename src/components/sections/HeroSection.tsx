@@ -119,7 +119,7 @@ export function HeroSection() {
                 data-cursor="VIEW"
                 className="inline-flex items-center gap-3 px-8 py-4 text-xs font-semibold tracking-[0.15em] uppercase text-gray-400 border border-white/[0.05] hover:border-white/20 hover:text-white transition-all duration-500"
               >
-                CV
+                View CV
               </a>
             </motion.div>
 
@@ -162,7 +162,7 @@ export function HeroSection() {
                 rel="noopener noreferrer"
                 className="group flex items-center gap-2 text-[10px] font-mono tracking-[0.2em] uppercase text-gray-500 hover:text-white transition-colors"
               >
-                CV
+                View CV
                 <svg className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
                 </svg>
