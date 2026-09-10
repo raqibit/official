@@ -63,7 +63,7 @@ export function HeroSection() {
         style={{ background: 'radial-gradient(circle, #00e5ff 0%, transparent 70%)' }}
       />
 
-      <div className="relative mx-auto max-w-[1400px] px-6 lg:px-8">
+      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
 
           {/* ── LEFT: Text content ── */}
@@ -98,7 +98,7 @@ export function HeroSection() {
               <Link
                 href="/projects"
                 data-cursor="VIEW"
-                className="group inline-flex items-center gap-3 px-8 py-4 text-xs font-semibold tracking-[0.15em] uppercase text-black bg-white hover:bg-[#00e5ff] transition-all duration-500"
+                className="group inline-flex items-center gap-3 px-6 sm:px-8 py-4 text-[10px] sm:text-xs font-semibold tracking-[0.15em] uppercase text-black bg-white hover:bg-[#00e5ff] transition-all duration-500"
               >
                 View My Work
                 <svg
@@ -117,7 +117,7 @@ export function HeroSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 data-cursor="VIEW"
-                className="inline-flex items-center gap-3 px-8 py-4 text-xs font-semibold tracking-[0.15em] uppercase text-gray-400 border border-white/[0.05] hover:border-white/20 hover:text-white transition-all duration-500"
+                className="inline-flex items-center gap-3 px-6 sm:px-8 py-4 text-[10px] sm:text-xs font-semibold tracking-[0.15em] uppercase text-gray-400 border border-white/[0.05] hover:border-white/20 hover:text-white transition-all duration-500"
               >
                 View CV
               </a>
@@ -152,7 +152,7 @@ export function HeroSection() {
             variants={imageVariant}
             initial="hidden"
             animate="show"
-            className="mt-14 flex justify-center gap-4 sm:-mt-44 sm:justify-start sm:gap-6 sm:pl-20 lg:mt-0 lg:pl-0 relative"
+            className="mt-14 flex justify-center gap-3 sm:-mt-44 sm:justify-start sm:gap-6 sm:pl-20 lg:mt-0 lg:pl-0 relative"
           >
             {/* Floating CV Link */}
             <div className="absolute -top-12 right-0 hidden lg:block">
