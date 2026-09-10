@@ -4,9 +4,10 @@ import { getGoogleAuth, CALENDAR_ID, TIME_START, TIME_END } from '@/lib/googleCa
 import { Resend } from 'resend'
 import crypto from 'crypto'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(req: Request) {
+  const resend = new Resend(process.env.RESEND_API_KEY)
+
   try {
     const body = await req.json()
     const { name, email, phone, projectType, message, date, timeSlot } = body
