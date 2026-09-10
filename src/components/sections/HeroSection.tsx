@@ -152,7 +152,7 @@ export function HeroSection() {
             variants={imageVariant}
             initial="hidden"
             animate="show"
-            className="mt-14 flex justify-center gap-3 sm:-mt-44 sm:justify-start sm:gap-6 sm:pl-20 lg:mt-0 lg:pl-0 relative"
+            className="mt-14 hidden sm:flex justify-center gap-3 sm:-mt-44 sm:justify-start sm:gap-6 sm:pl-20 lg:mt-0 lg:pl-0 relative"
           >
             {/* Floating CV Link */}
             <div className="absolute -top-12 right-0 hidden lg:block">
