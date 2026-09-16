@@ -62,10 +62,16 @@ function useBookingForm() {
     try {
       const dateStr = toLocalDateString(d)
       const res = await fetch(`/api/booking/available?date=${dateStr}`)
+      
+      if (!res.ok) {
+        throw new Error('Failed to fetch availability')
+      }
+      
       const data = await res.json()
       setAvailableSlots(data.availableSlots ?? [])
-    } catch {
-      // Fallback: show all slots on network error
+    } catch (err) {
+      console.error('Booking API error:', err)
+      // Fallback: show all slots on network or server error so users can still try to book
       setAvailableSlots(TIME_SLOTS.map(t => t.label))
     } finally {
       setIsLoadingSlots(false)
