@@ -1,24 +1,16 @@
 import Link from 'next/link'
-import {
-  GitHubIcon,
-  InstagramIcon,
-  LinkedInIcon,
-  XIcon,
-} from '@/components/layout/SocialIcons'
+import { socialLinks } from '@/data/socials'
+import { pageLinks } from '@/data/navigation'
+import { OWNER_NAME, LOCATION, TIMEZONE } from '@/data/site'
 
-const pageLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/uses', label: 'Uses' },
-]
-
-const socialLinks = [
-  { href: 'https://x.com/prime3it', icon: XIcon, label: 'X' },
-  { href: 'https://instagram.com/rq_ismail', icon: InstagramIcon, label: 'Instagram' },
-  { href: 'https://github.com/rq-ismail', icon: GitHubIcon, label: 'GitHub' },
-  { href: 'https://linkedin.com/in/roqeebismail', icon: LinkedInIcon, label: 'LinkedIn' },
-]
+/**
+ * Footer
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Site-wide footer with brand identity, page navigation, social links,
+ * copyright (dynamic year), and location indicator.
+ *
+ * All data imported from centralised modules — no hardcoded duplicates.
+ */
 
 export function Footer() {
   return (
@@ -41,7 +33,7 @@ export function Footer() {
               className="text-white font-bold tracking-tight text-sm"
               style={{ fontFamily: 'var(--font-sans)' }}
             >
-              Raqīb Ismāʿīl
+              {OWNER_NAME}
             </span>
             <span
               className="font-mono text-[10px] tracking-[0.2em] uppercase text-gray-700"
@@ -86,18 +78,14 @@ export function Footer() {
 
         {/* Bottom row */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <p
-            className="text-[11px] text-gray-700 font-mono tracking-wide"
-          >
-            &copy; 2025 Raqīb Ismāʿīl. All rights reserved.
+          <p className="text-[11px] text-gray-700 font-mono tracking-wide">
+            &copy; {new Date().getFullYear()} {OWNER_NAME}. All rights reserved.
           </p>
 
           <div className="flex items-center gap-1.5">
             <span className="block w-1.5 h-1.5 rounded-full bg-[#00e5ff] animate-pulse" />
-            <span
-              className="text-[11px] text-gray-700 font-mono tracking-wide"
-            >
-              Lagos, Nigeria · UTC+1
+            <span className="text-[11px] text-gray-700 font-mono tracking-wide">
+              {LOCATION} · {TIMEZONE}
             </span>
           </div>
         </div>

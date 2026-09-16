@@ -6,13 +6,17 @@
  * Two-column editorial contact layout:
  *  - Left: large heading, email CTA, resume download button
  *  - Right: social links list + location indicator
+ *
+ * Social links imported from centralised @/data/socials module.
  */
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
-import { GitHubIcon, InstagramIcon, LinkedInIcon, XIcon } from '@/components/layout/SocialIcons'
+import { socialLinks } from '@/data/socials'
+import { LOCATION, TIMEZONE } from '@/data/site'
 import { ContactModal } from '@/components/ui/ContactModal'
+import { SectionLabel } from '@/components/ui/SectionLabel'
 
 export function ContactSection() {
   const [isContactOpen, setIsContactOpen] = useState(false)
@@ -28,25 +32,12 @@ export function ContactSection() {
 
           {/* Left — Editorial */}
           <div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              className="flex items-center gap-4 mb-10"
-            >
-              <span className="block h-px w-8 bg-gray-700" />
-              <span
-                className="font-mono text-xs tracking-[0.2em] uppercase text-gray-600"
-                style={{ fontFamily: 'var(--font-mono)' }}
-              >
-                Get in Touch
-              </span>
-            </motion.div>
+            <SectionLabel className="mb-10">Get in Touch</SectionLabel>
 
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true, margin: '-100px' }}
               className="text-5xl sm:text-6xl font-bold text-white leading-none mb-6"
               style={{ fontFamily: 'var(--font-sans)' }}
             >
@@ -65,7 +56,7 @@ export function ContactSection() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true, margin: '-100px' }}
               transition={{ delay: 0.1 }}
               className="text-sm text-gray-500 leading-relaxed max-w-md mb-12"
               style={{ fontFamily: 'var(--font-sans)' }}
@@ -78,12 +69,10 @@ export function ContactSection() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true, margin: '-100px' }}
               transition={{ delay: 0.2 }}
               className="flex flex-col items-start gap-10"
             >
-
-
               <button
                 onClick={() => setIsContactOpen(true)}
                 className="group inline-flex items-center justify-center gap-3 w-fit px-8 py-4 bg-[#00e5ff]/10 hover:bg-[#00e5ff]/20 text-[#00e5ff] border border-[#00e5ff]/20 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(0,229,255,0.1)] hover:shadow-[0_0_25px_rgba(0,229,255,0.2)]"
@@ -97,11 +86,11 @@ export function ContactSection() {
             </motion.div>
           </div>
 
-          {/* Right — Info + Timeline */}
+          {/* Right — Info + Socials */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.7, delay: 0.2 }}
             className="flex flex-col gap-10 pt-4 lg:pt-24"
           >
@@ -114,12 +103,7 @@ export function ContactSection() {
                 Elsewhere
               </h3>
               <div className="flex flex-wrap gap-4">
-                {[
-                  { label: 'GitHub', icon: GitHubIcon, href: 'https://github.com/rq-ismail', color: '#00e5ff' },
-                  { label: 'LinkedIn', icon: LinkedInIcon, href: 'https://linkedin.com/in/roqeebismail', color: '#00e5ff' },
-                  { label: 'X (Twitter)', icon: XIcon, href: 'https://x.com/prime3it', color: '#7c3aed' },
-                  { label: 'Instagram', icon: InstagramIcon, href: 'https://instagram.com/rq_ismail', color: '#7c3aed' },
-                ].map((social) => (
+                {socialLinks.map((social) => (
                   <Link
                     key={social.label}
                     href={social.href}
@@ -140,7 +124,7 @@ export function ContactSection() {
               style={{ fontFamily: 'var(--font-mono)' }}
             >
               <span className="block w-1.5 h-1.5 rounded-full bg-[#00e5ff] animate-pulse" />
-              Lagos, Nigeria · UTC+1
+              {LOCATION} · {TIMEZONE}
             </div>
           </motion.div>
 

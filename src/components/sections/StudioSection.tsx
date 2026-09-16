@@ -4,43 +4,59 @@
  * StudioSection
  * ─────────────────────────────────────────────────────────────────────────────
  * Showcases the microsoldering studio side of the business.
- * Left column: amber-toned photo1 with duotone blend + corner frames.
- * Right column: heading, prolific description, stat grid, services list.
+ * Left column: amber-toned photo with mouse-driven spotlight colour reveal.
+ * Right column: heading, description, stat grid, services list.
+ *
+ * Performance: Mouse tracking uses CSS custom properties updated via RAF
+ * to avoid React re-renders on every pixel of movement.
  */
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { useState, useRef } from 'react'
+import { useRef, useCallback } from 'react'
+import { SectionLabel } from '@/components/ui/SectionLabel'
 
 // ── Studio stats ──────────────────────────────────────────────────────────────
+
 const STATS = [
   { value: '40+', label: 'Successful Repairs' },
   { value: '3yrs', label: 'Precision Experience' },
   { value: '100%', label: 'Data Recovery Rate' },
-]
+] as const
 
 // ── Services list ─────────────────────────────────────────────────────────────
+
 const SERVICES = [
   'iPhone & MacBook Logic Board Repair',
   'BGA Chip Reballing & Replacement',
   'Water Damage Diagnosis & Recovery',
   'NAND Flash Data Recovery',
   'Right-to-Repair Advocacy',
-]
+] as const
 
 export function StudioSection() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [isHovering, setIsHovering] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  /**
+   * Updates CSS custom properties for the spotlight mask position.
+   * This avoids React state updates (and re-renders) on every mouse pixel.
+   */
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return
     const rect = containerRef.current.getBoundingClientRect()
-    setMousePosition({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    })
-  }
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    containerRef.current.style.setProperty('--spot-x', `${x}px`)
+    containerRef.current.style.setProperty('--spot-y', `${y}px`)
+  }, [])
+
+  const handleMouseEnter = useCallback(() => {
+    containerRef.current?.style.setProperty('--spot-opacity', '1')
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    containerRef.current?.style.setProperty('--spot-opacity', '0')
+  }, [])
 
   return (
     <section id="studio" className="relative bg-[#080808] py-28 sm:py-36 overflow-hidden">
@@ -50,20 +66,7 @@ export function StudioSection() {
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12 xl:px-20">
 
         {/* Section label */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="flex items-center gap-4 mb-16"
-        >
-          <span className="block h-px w-8 bg-amber-500" />
-          <span
-            className="font-mono text-xs tracking-[0.2em] uppercase text-amber-600"
-            style={{ fontFamily: 'var(--font-mono)' }}
-          >
-            The Studio
-          </span>
-        </motion.div>
+        <SectionLabel color="#f59e0b">The Studio</SectionLabel>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
 
@@ -71,13 +74,14 @@ export function StudioSection() {
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.8 }}
             className="relative h-[420px] lg:h-[520px] w-full order-2 lg:order-1 rounded-2xl overflow-hidden group bg-gray-900/5"
             ref={containerRef}
             onMouseMove={handleMouseMove}
-            onMouseEnter={() => setIsHovering(true)}
-            onMouseLeave={() => setIsHovering(false)}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            style={{ '--spot-x': '0px', '--spot-y': '0px', '--spot-opacity': '0' } as React.CSSProperties}
           >
             {/* Corner frame markers */}
             <span className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-amber-500 opacity-50 z-20 transition-opacity duration-700 group-hover:opacity-10" />
@@ -103,13 +107,13 @@ export function StudioSection() {
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
 
-            {/* Overlay Studio photo — full color revealed by mouse mask */}
+            {/* Overlay Studio photo — full color revealed by mouse mask (CSS-driven) */}
             <div
               className="absolute inset-0 z-10 pointer-events-none transition-opacity duration-300"
               style={{
-                opacity: isHovering ? 1 : 0,
-                WebkitMaskImage: `radial-gradient(circle 200px at ${mousePosition.x}px ${mousePosition.y}px, black 0%, transparent 100%)`,
-                maskImage: `radial-gradient(circle 200px at ${mousePosition.x}px ${mousePosition.y}px, black 0%, transparent 100%)`,
+                opacity: 'var(--spot-opacity)',
+                WebkitMaskImage: `radial-gradient(circle 200px at var(--spot-x) var(--spot-y), black 0%, transparent 100%)`,
+                maskImage: `radial-gradient(circle 200px at var(--spot-x) var(--spot-y), black 0%, transparent 100%)`,
               }}
             >
               <Image
@@ -127,7 +131,7 @@ export function StudioSection() {
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.8, delay: 0.1 }}
             className="order-1 lg:order-2"
           >

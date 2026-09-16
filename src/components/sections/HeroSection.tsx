@@ -1,14 +1,21 @@
 'use client'
 
+/**
+ * HeroSection
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Full-viewport intro with staggered text animation and a desaturated image
+ * mosaic on the right. Images reveal full colour on hover.
+ *
+ * Uses Next.js <Image> for automatic optimisation (WebP/AVIF, responsive
+ * srcset, lazy loading). Social links imported from centralised data module.
+ */
+
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, type Variants } from 'framer-motion'
-import { useState } from 'react'
-import {
-  GitHubIcon,
-  InstagramIcon,
-  LinkedInIcon,
-  XIcon,
-} from '@/components/layout/SocialIcons'
+import { socialLinks } from '@/data/socials'
+
+// ── Animation variants ────────────────────────────────────────────────────────
 
 const container: Variants = {
   hidden: { opacity: 0 },
@@ -27,6 +34,8 @@ const imageVariant: Variants = {
   hidden: { opacity: 0, scale: 1.04 },
   show: { opacity: 1, scale: 1, transition: { duration: 1.2, ease: [0.22, 1, 0.36, 1] } },
 }
+
+// ── Social link button ────────────────────────────────────────────────────────
 
 function SocialLink({
   icon: Icon,
@@ -52,8 +61,28 @@ function SocialLink({
   )
 }
 
-export function HeroSection() {
+// ── Hero image card (DRY helper) ──────────────────────────────────────────────
 
+function HeroImage({ src, alt }: { src: string; alt: string }) {
+  return (
+    <div className="relative group overflow-hidden rounded-xl">
+      <Image
+        src={src}
+        alt={alt}
+        width={176}
+        height={264}
+        className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out"
+        sizes="(max-width: 640px) 96px, (max-width: 1024px) 128px, 176px"
+        loading="lazy"
+      />
+      <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]" />
+    </div>
+  )
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
+
+export function HeroSection() {
   return (
     <section className="relative min-h-[calc(100vh-80px)] flex items-center overflow-hidden">
       {/* Subtle radial glow behind content */}
@@ -124,10 +153,14 @@ export function HeroSection() {
             </motion.div>
 
             <motion.div variants={item} className="flex items-center gap-5">
-              <SocialLink href="https://x.com/prime3it" icon={XIcon} label="X / Twitter" />
-              <SocialLink href="https://instagram.com/rq_ismail" icon={InstagramIcon} label="Instagram" />
-              <SocialLink href="https://github.com/rq-ismail" icon={GitHubIcon} label="GitHub" />
-              <SocialLink href="https://linkedin.com/in/roqeebismail" icon={LinkedInIcon} label="LinkedIn" />
+              {socialLinks.map((social) => (
+                <SocialLink
+                  key={social.label}
+                  href={social.href}
+                  icon={social.icon}
+                  label={social.label}
+                />
+              ))}
             </motion.div>
 
             {/* Stat card — years & projects */}
@@ -170,30 +203,15 @@ export function HeroSection() {
             </div>
 
             <div className="w-24 sm:w-32 lg:w-44 flex-none space-y-4 sm:space-y-6 pt-16 sm:pt-80 lg:order-last lg:pt-36 xl:order-0 xl:pt-80">
-              <div className="relative group overflow-hidden rounded-xl">
-                <img src="/images/hero_software.jpg" alt="" className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out" />
-                <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
-              </div>
+              <HeroImage src="/images/hero_software.jpg" alt="Code editor showing a software project" />
             </div>
             <div className="w-24 sm:w-32 lg:w-44 flex-none space-y-4 sm:space-y-6 sm:pt-52 lg:pt-36">
-              <div className="relative group overflow-hidden rounded-xl">
-                <img src="/images/hero_hardware.jpg" alt="" className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out" />
-                <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
-              </div>
-              <div className="relative group overflow-hidden rounded-xl">
-                <img src="/images/hero_design.jpg" alt="" className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out" />
-                <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
-              </div>
+              <HeroImage src="/images/hero_hardware.jpg" alt="Microsoldering station with microscope" />
+              <HeroImage src="/images/hero_design.jpg" alt="Visual design work in progress" />
             </div>
             <div className="w-24 sm:w-32 lg:w-44 flex-none space-y-4 sm:space-y-6 pt-16 sm:pt-0">
-              <div className="relative group overflow-hidden rounded-xl">
-                <img src="/images/hero_workspace.jpg" alt="" className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out" />
-                <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
-              </div>
-              <div className="relative group overflow-hidden rounded-xl">
-                <img src="/images/projects/motion-reel.jpg" alt="" className="aspect-[2/3] w-full bg-gray-900/5 object-cover opacity-50 grayscale mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-700 ease-out" />
-                <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.03]"></div>
-              </div>
+              <HeroImage src="/images/hero_workspace.jpg" alt="Developer workspace with dual monitors" />
+              <HeroImage src="/images/projects/motion-reel.jpg" alt="Motion design reel preview" />
             </div>
           </motion.div>
         </div>

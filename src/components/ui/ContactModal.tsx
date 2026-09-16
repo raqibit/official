@@ -40,7 +40,7 @@ export function ContactModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
       }
 
       setIsSuccess(true)
-    } catch (err) {
+    } catch {
       setError('Something went wrong. Please try again or email me directly.')
     } finally {
       setIsSubmitting(false)

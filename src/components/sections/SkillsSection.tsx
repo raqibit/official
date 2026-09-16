@@ -8,10 +8,13 @@
  * and skill tag pills.
  *
  * Discipline data lives in @/data/disciplines for easy updates.
+ * Uses shared SectionLabel and TechTag components.
  */
 
 import { motion } from 'framer-motion'
 import { disciplines } from '@/data/disciplines'
+import { SectionLabel } from '@/components/ui/SectionLabel'
+import { TechTag } from '@/components/ui/TechTag'
 
 export function SkillsSection() {
   return (
@@ -19,27 +22,13 @@ export function SkillsSection() {
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12 xl:px-20">
 
         {/* ── Section label ─────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center gap-4 mb-16"
-        >
-          <span className="block h-px w-8 bg-gray-700" />
-          <span
-            className="font-mono text-xs tracking-[0.2em] uppercase text-gray-600"
-            style={{ fontFamily: 'var(--font-mono)' }}
-          >
-            What I Do
-          </span>
-        </motion.div>
+        <SectionLabel>What I Do</SectionLabel>
 
         {/* ── Section heading ───────────────────────────────── */}
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.7 }}
           className="text-4xl sm:text-5xl font-bold text-white mb-4 leading-tight"
           style={{ fontFamily: 'var(--font-sans)' }}
@@ -62,7 +51,7 @@ export function SkillsSection() {
               key={d.number}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true, margin: '-100px' }}
               transition={{ duration: 0.7, delay: i * 0.15 }}
               className="group relative flex flex-col bg-[#0a0a0a] p-10 lg:p-12 hover:bg-[#0f0f0f] transition-colors duration-500"
             >
@@ -111,19 +100,12 @@ export function SkillsSection() {
               {/* Skill tag pills — pushed to bottom by mt-auto */}
               <div className="mt-auto flex flex-wrap gap-2">
                 {d.skills.map((skill) => (
-                  <span
+                  <TechTag
                     key={skill}
-                    className="text-xs px-3 py-1 rounded-none border"
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      color: d.color,
-                      borderColor: d.colorBorder,
-                      background: d.colorDim,
-                      letterSpacing: '0.05em',
-                    }}
-                  >
-                    {skill}
-                  </span>
+                    label={skill}
+                    accentColor={d.color}
+                    size="sm"
+                  />
                 ))}
               </div>
             </motion.div>

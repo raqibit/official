@@ -6,6 +6,10 @@ const nextConfig = {
     // All project images are now local — no external domains needed
     formats: ['image/avif', 'image/webp'],
   },
+  // Tree-shake large libraries for smaller client bundles
+  experimental: {
+    optimizePackageImports: ['framer-motion'],
+  },
   // Compress responses
   compress: true,
   // Strict mode for better debugging in development

@@ -30,12 +30,28 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://rq-ismail.dev'),
   title: {
     template: '%s - Raqīb Ismāʿīl',
     default: 'Raqīb Ismāʿīl — Software Engineer',
   },
   description:
     'Software engineer focused on building high-performance interfaces and scalable systems.',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'Raqīb Ismāʿīl',
+    title: 'Raqīb Ismāʿīl — Software Engineer',
+    description:
+      'Software engineer focused on building high-performance interfaces and scalable systems.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    creator: '@prime3it',
+    title: 'Raqīb Ismāʿīl — Software Engineer',
+    description:
+      'Software engineer focused on building high-performance interfaces and scalable systems.',
+  },
 }
 
 export const viewport = {

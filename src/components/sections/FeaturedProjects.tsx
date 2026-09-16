@@ -3,18 +3,12 @@
 /**
  * FeaturedProjects
  * ─────────────────────────────────────────────────────────────────────────────
- * Fetches live projects from /api/projects and renders them in a bento grid:
+ * Renders featured projects in a bento grid layout on the home page:
  *  - First project: full 3-column width (featured)
- *  - Next two: 1-column each side-by-side
- *  - Remaining: standard cards
+ *  - Next two: split across 1 + 2 columns
  *
- * If the database is empty, renders 3 placeholder cards so the section
- * is never visually empty.
- *
- * Project cards support:
- *  - Hover video background (muted autoplay)
- *  - Accent colour glow line at top
- *  - ProjectDetailOverlay on click
+ * Uses shared icons, SectionLabel, and TechTag components.
+ * Opens ProjectDetailOverlay on card click.
  */
 
 import { useState } from 'react'
@@ -22,46 +16,21 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { type Project } from '@/lib/mdx'
 import { ProjectDetailOverlay } from '@/components/overlays/ProjectDetailOverlay'
-
-
-// ── Arrow icon ────────────────────────────────────────────────────────────────
-function ArrowIcon() {
-  return (
-    <svg
-      className="h-4 w-4"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={1.5}
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-    </svg>
-  )
-}
+import { ArrowIcon } from '@/components/icons'
+import { SectionLabel } from '@/components/ui/SectionLabel'
+import { TechTag } from '@/components/ui/TechTag'
 
 // ── Section header (shared between empty + live states) ───────────────────────
+
 function SectionHeader({ showAllLink }: { showAllLink?: boolean }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-16">
       <div>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="flex items-center gap-4 mb-4"
-        >
-          <span className="block h-px w-8 bg-gray-700" />
-          <span
-            className="font-mono text-xs tracking-[0.2em] uppercase text-gray-600"
-            style={{ fontFamily: 'var(--font-mono)' }}
-          >
-            Selected Work
-          </span>
-        </motion.div>
+        <SectionLabel className="mb-4">Selected Work</SectionLabel>
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: '-100px' }}
           className="text-4xl sm:text-5xl font-bold text-white"
           style={{ fontFamily: 'var(--font-sans)' }}
         >
@@ -90,6 +59,7 @@ function SectionHeader({ showAllLink }: { showAllLink?: boolean }) {
 }
 
 // ── Project card ──────────────────────────────────────────────────────────────
+
 function ProjectCard({
   project,
   className = '',
@@ -107,7 +77,7 @@ function ProjectCard({
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, margin: '-100px' }}
       transition={{ duration: 0.6, delay: index * 0.08 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -170,19 +140,7 @@ function ProjectCard({
       <div className="p-8 pt-0 flex items-center justify-between z-10 relative">
         <div className="flex flex-wrap gap-2">
           {project.techStack.map((tag) => (
-            <span
-              key={tag}
-              className="text-[10px] px-2 py-0.5 border"
-              style={{
-                fontFamily: 'var(--font-mono)',
-                color: project.accentColor,
-                borderColor: `${project.accentColor}30`,
-                background: `${project.accentColor}0a`,
-                letterSpacing: '0.05em',
-              }}
-            >
-              {tag}
-            </span>
+            <TechTag key={tag} label={tag} accentColor={project.accentColor} />
           ))}
         </div>
         <div
@@ -197,12 +155,12 @@ function ProjectCard({
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
+
 export function FeaturedProjects({ projects }: { projects: Project[] }) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
   if (!projects || projects.length === 0) return null
 
-  // ── Live data: bento layout ────────────────────────────────────────────────
   const p1 = projects[0]
   const p2 = projects[1]
   const p3 = projects[2]

@@ -6,12 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "type-check": "tsc --noEmit"
   },
   "type": "module",
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
-    "@calcom/embed-react": "^1.5.3",
     "@headlessui/react": "^2.2.10",
     "@tailwindcss/postcss": "^4.3.1",
     "@tailwindcss/typography": "^0.5.16",
@@ -20,12 +21,10 @@
     "googleapis": "^178.1.1",
     "gray-matter": "^4.0.3",
     "next": "16.2.6",
-    "next-themes": "^0.4.6",
     "react": "19.2.6",
     "react-dom": "19.2.6",
     "resend": "^6.20.0",
-    "tailwindcss": "^4.3.1",
-    "typescript": "^5.8.3"
+    "tailwindcss": "^4.3.1"
   },
   "devDependencies": {
     "@types/node": "^24.1.0",
@@ -35,7 +34,8 @@
     "eslint-config-next": "16.2.6",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
-    "sharp": "0.34.3"
+    "sharp": "0.34.3",
+    "typescript": "^5.8.3"
   },
   "overrides": {
     "@types/react": "19.2.14",

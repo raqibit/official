@@ -63,7 +63,6 @@ body {
   font-family: var(--font-sans);
   background-color: var(--color-surface);
   color: var(--color-text-primary);
-  cursor: none;
 }
 
 .font-display {
@@ -74,14 +73,18 @@ body {
   font-family: var(--font-mono);
 }
 
+/* Hide system cursor ONLY on devices with a mouse (non-touch).
+   Touch devices retain the default cursor for usability. */
+@media (hover: hover) and (pointer: fine) {
+  body { cursor: none; }
+  a, button, [role="button"], input, textarea, select, label { cursor: none; }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--color-surface); }
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: #555; }
-
-/* Force all elements to inherit cursor: none */
-a, button, [role="button"], input, textarea, select, label { cursor: none; }
 
 /* Scrollbar hide utility */
 .scrollbar-hide {

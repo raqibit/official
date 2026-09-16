@@ -14,8 +14,9 @@ import {
 import clsx from 'clsx'
 
 import { Container } from '@/components/layout/Container'
+import { navLinks } from '@/data/navigation'
 
-// ── Icons ─────────────────────────────────────────────────────────────────────
+// ── Icons (Header-specific — these accept generic SVG props for Headless UI) ──
 
 function CloseIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -32,7 +33,7 @@ function CloseIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   )
 }
 
-function ChevronDownIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
+function HeaderChevronDown(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
     <svg viewBox="0 0 8 6" aria-hidden="true" {...props}>
       <path
@@ -47,12 +48,6 @@ function ChevronDownIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 }
 
 // ── Navigation ────────────────────────────────────────────────────────────────
-
-const navLinks = [
-  { href: '/about',    label: 'About' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/uses',     label: 'Uses' },
-]
 
 function MobileNavItem({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -69,7 +64,7 @@ function MobileNavigation(props: React.ComponentPropsWithoutRef<typeof Popover>)
     <Popover {...props}>
       <PopoverButton className="group flex items-center rounded-full bg-zinc-800/90 px-4 py-2 text-sm font-medium text-zinc-200 shadow-lg ring-1 ring-white/10 backdrop-blur-md hover:ring-white/20 transition-all">
         Menu
-        <ChevronDownIcon className="ml-3 h-auto w-2 stroke-zinc-400 group-hover:stroke-white" />
+        <HeaderChevronDown className="ml-3 h-auto w-2 stroke-zinc-400 group-hover:stroke-white" />
       </PopoverButton>
       <PopoverBackdrop
         transition

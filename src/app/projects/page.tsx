@@ -3,7 +3,7 @@ import { getProjects } from '@/lib/mdx'
 import { ProjectsClient } from './ProjectsClient'
 
 export const metadata: Metadata = {
-  title: 'Projects | Raqīb Ismāʿīl',
+  title: 'Projects',
   description: 'A collection of projects spanning frontend UI engineering to full-stack applications.',
 }
 
