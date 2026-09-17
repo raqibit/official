@@ -58,7 +58,7 @@ export function ContactSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-100px' }}
               transition={{ delay: 0.1 }}
-              className="text-sm text-gray-500 leading-relaxed max-w-md mb-12"
+              className="text-[15px] text-gray-500 leading-[1.7] max-w-md mb-12"
               style={{ fontFamily: 'var(--font-sans)' }}
             >
               Whether it&apos;s a complex web application, a critical hardware repair,

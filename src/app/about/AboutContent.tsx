@@ -90,7 +90,7 @@ export function AboutContent() {
               </span> systems.
             </motion.h1>
 
-            <motion.div variants={item} className="space-y-6 text-sm text-gray-500 leading-relaxed" style={{ fontFamily: 'var(--font-sans)' }}>
+            <motion.div variants={item} className="space-y-6 text-[15px] text-gray-500 leading-[1.7]" style={{ fontFamily: 'var(--font-sans)' }}>
               <p>
                 I&apos;m a Lagos-based software engineer and microsoldering specialist. I operate at the intersection of
                 AI-driven software development, premium visual design, and hardware-level diagnostics.
@@ -231,7 +231,7 @@ export function AboutContent() {
                         <span className="font-mono text-[10px] tracking-widest text-gray-500" style={{ fontFamily: 'var(--font-mono)' }}>{entry.year}</span>
                         <span className="text-sm font-semibold text-white" style={{ fontFamily: 'var(--font-sans)' }}>{entry.title}</span>
                       </div>
-                      <p className="text-sm text-gray-600 leading-relaxed" style={{ fontFamily: 'var(--font-sans)' }}>{entry.desc}</p>
+                      <p className="text-[15px] text-gray-600 leading-[1.7]" style={{ fontFamily: 'var(--font-sans)' }}>{entry.desc}</p>
                     </div>
                   </div>
                 ))}

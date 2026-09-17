@@ -154,7 +154,7 @@ export function StudioSection() {
 
             {/* Body copy */}
             <p
-              className="text-sm text-gray-500 leading-relaxed mb-10 max-w-md"
+              className="text-[15px] text-gray-500 leading-[1.7] mb-10 max-w-md"
               style={{ fontFamily: 'var(--font-sans)' }}
             >
               I specialize in intricate logic board restorations for iPhones and MacBooks.

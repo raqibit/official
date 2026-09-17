@@ -249,7 +249,7 @@ export function ProjectDetailOverlay({
                   {aboutParagraphs.map((para, i) => (
                     <p
                       key={i}
-                      className="text-sm text-gray-500 leading-relaxed"
+                      className="text-[15px] text-gray-500 leading-[1.7]"
                       style={{ fontFamily: 'var(--font-sans)' }}
                     >
                       {para}

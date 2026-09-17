@@ -58,7 +58,7 @@ export function NewsletterSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ delay: 0.2 }}
-          className="text-gray-500 text-sm leading-relaxed mb-10 max-w-md mx-auto"
+          className="text-[15px] text-gray-500 leading-[1.7] mb-10 max-w-md mx-auto"
         >
           Get notified about new projects, hardware experiments, and design essays.
           No spam. Unsubscribe anytime.

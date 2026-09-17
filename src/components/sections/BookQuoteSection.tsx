@@ -172,7 +172,7 @@ export function BookQuoteSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-100px' }}
               transition={{ delay: 0.2 }}
-              className="text-gray-500 text-sm leading-relaxed"
+              className="text-[15px] text-gray-500 leading-[1.7]"
             >
               Pick a time that works for you. I&apos;ll review your requirements, give you a precise quote,
               and we&apos;ll map out next steps.
@@ -206,7 +206,7 @@ export function BookQuoteSection() {
                     </svg>
                   </div>
                   <h3 className="text-2xl font-bold text-white">Session Booked!</h3>
-                  <p className="text-zinc-400 text-sm leading-relaxed max-w-xs">
+                  <p className="text-[15px] text-zinc-400 leading-[1.7] max-w-xs">
                     Your quote session is confirmed for{' '}
                     <span className="text-[#00e5ff]">{selectedDate && formatDate(selectedDate)}</span> at{' '}
                     <span className="text-[#00e5ff]">{selectedSlot}</span>.{' '}

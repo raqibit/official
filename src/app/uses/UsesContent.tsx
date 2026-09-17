@@ -36,7 +36,7 @@ function Tool({ title, href, children }: ToolProps) {
         ) : (
           <h3 className="font-semibold text-white text-lg" style={{ fontFamily: 'var(--font-sans)' }}>{title}</h3>
         )}
-        <p className="mt-4 text-sm text-gray-500 leading-relaxed max-w-2xl" style={{ fontFamily: 'var(--font-sans)' }}>{children}</p>
+        <p className="mt-4 text-[15px] text-gray-500 leading-[1.7] max-w-2xl" style={{ fontFamily: 'var(--font-sans)' }}>{children}</p>
       </div>
     </motion.li>
   )
@@ -196,7 +196,7 @@ export function UsesContent() {
           </span> that matter.
         </h1>
         
-        <p className="text-sm text-gray-500 leading-relaxed" style={{ fontFamily: 'var(--font-sans)' }}>
+        <p className="text-[15px] text-gray-500 leading-[1.7]" style={{ fontFamily: 'var(--font-sans)' }}>
           I get asked a lot about the tools I use to build software, architect systems, and design interfaces.
           Here is a comprehensive list of everything I rely on — from my main machine to the development environments
           and services that power my daily workflows.

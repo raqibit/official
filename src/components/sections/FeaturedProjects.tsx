@@ -129,7 +129,7 @@ function ProjectCard({
           {project.name}
         </h3>
         <p
-          className="text-sm text-gray-500 leading-relaxed mb-6"
+          className="text-[15px] text-gray-500 leading-[1.7] mb-6"
           style={{ fontFamily: 'var(--font-sans)' }}
         >
           {project.tagline}

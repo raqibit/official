@@ -91,7 +91,7 @@ export function SkillsSection() {
 
               {/* Description */}
               <p
-                className="text-sm text-gray-500 leading-relaxed mb-8"
+                className="text-[15px] text-gray-500 leading-[1.7] mb-8"
                 style={{ fontFamily: 'var(--font-sans)' }}
               >
                 {d.desc}
