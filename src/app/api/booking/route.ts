@@ -77,8 +77,9 @@ export async function POST(req: Request) {
 
     const bookingId = crypto.randomUUID()
 
-    // ── Send notification email (HTML-escaped to prevent XSS) ──
+    // ── Send notification emails (HTML-escaped to prevent XSS) ──
     try {
+      // 1. Email to You (Admin Notification)
       await resend.emails.send({
         from: EMAIL_FROM_BOOKING,
         to: EMAIL_NOTIFY_TO,
@@ -91,6 +92,22 @@ export async function POST(req: Request) {
           <p><strong>Project:</strong> ${escapeHtml(safeProjectType)}</p>
           <p><strong>Date & Time:</strong> ${escapeHtml(date)} @ ${TIME_START[timeSlot]}</p>
           <p><strong>Message:</strong><br/>${escapeHtml(safeMessage) || 'N/A'}</p>
+        `,
+      })
+
+      // 2. Email to Client (Confirmation)
+      await resend.emails.send({
+        from: EMAIL_FROM_BOOKING,
+        to: safeEmail,
+        subject: `Booking Confirmed: Project Sync with Raqīb Ismāʿīl`,
+        html: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #111;">
+            <h2>Session Confirmed</h2>
+            <p>Hi ${escapeHtml(safeName)},</p>
+            <p>Thanks for reaching out! Your project sync session is confirmed for <strong>${escapeHtml(date)} at ${TIME_START[timeSlot]} (GMT+1)</strong>.</p>
+            <p>You should also receive a Google Calendar invitation shortly containing the Google Meet video link for our call.</p>
+            <p>Looking forward to discussing your project!<br/><br/>Best,<br/>Raqīb Ismāʿīl</p>
+          </div>
         `,
       })
     } catch (emailError) {
