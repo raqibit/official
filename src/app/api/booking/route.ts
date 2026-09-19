@@ -80,7 +80,7 @@ export async function POST(req: Request) {
     // ── Send notification emails (HTML-escaped to prevent XSS) ──
     try {
       // 1. Email to You (Admin Notification)
-      await resend.emails.send({
+      const adminEmail = await resend.emails.send({
         from: EMAIL_FROM_BOOKING,
         to: EMAIL_NOTIFY_TO,
         subject: `New Booking: ${safeName} (${safeProjectType})`,
@@ -95,8 +95,12 @@ export async function POST(req: Request) {
         `,
       })
 
+      if (adminEmail.error) {
+        console.error('[Resend Admin Email Error]', adminEmail.error)
+      }
+
       // 2. Email to Client (Confirmation)
-      await resend.emails.send({
+      const clientEmail = await resend.emails.send({
         from: EMAIL_FROM_BOOKING,
         to: safeEmail,
         subject: `Booking Confirmed: Project Sync with Raqīb Ismāʿīl`,
@@ -110,8 +114,12 @@ export async function POST(req: Request) {
           </div>
         `,
       })
+
+      if (clientEmail.error) {
+        console.error('[Resend Client Email Error]', clientEmail.error)
+      }
     } catch (emailError) {
-      console.error('[Resend Error]', emailError)
+      console.error('[Resend Unexpected Error]', emailError)
       // Non-blocking — booking still succeeds even if email fails
     }
 
