@@ -19,10 +19,10 @@ export const TIMEZONE = 'UTC+1'
 export const TIMEZONE_IANA = 'Africa/Lagos'
 
 /** Email sender addresses (Resend) */
-export const EMAIL_FROM_CONTACT = 'Contact Form <hello@rq-ismail.dev>'
-export const EMAIL_FROM_BOOKING = 'Bookings <hello@rq-ismail.dev>'
-export const EMAIL_FROM_NEWSLETTER = 'Raqīb Ismāʿīl <hello@rq-ismail.dev>'
-export const EMAIL_NOTIFY_TO = 'rq.ismaeel@gmail.com'
+export const EMAIL_FROM_CONTACT = 'Contact Form <onboarding@resend.dev>'
+export const EMAIL_FROM_BOOKING = 'Bookings <onboarding@resend.dev>'
+export const EMAIL_FROM_NEWSLETTER = 'Raqīb Ismāʿīl <onboarding@resend.dev>'
+export const EMAIL_NOTIFY_TO = 'raqibit3@gmail.com'
 
 /** Brand colour palette — mirrors CSS custom properties */
 export const BRAND = {
