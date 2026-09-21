@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { Resend } from 'resend'
+import { getResendClient } from '@/lib/email'
 import { escapeHtml, isValidEmail, sanitizeInput } from '@/lib/sanitize'
 import { EMAIL_FROM_CONTACT, EMAIL_NOTIFY_TO, OWNER_NAME } from '@/data/site'
 
@@ -14,7 +14,8 @@ import { EMAIL_FROM_CONTACT, EMAIL_NOTIFY_TO, OWNER_NAME } from '@/data/site'
  * All user input is HTML-escaped before embedding in email templates.
  */
 export async function POST(req: Request) {
-  const resend = new Resend(process.env.RESEND_API_KEY)
+  const resend = getResendClient()
+
   try {
     const body = await req.json()
     const { name, email, whatsapp, company, inquiryType, budget, message } = body
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
     const safeMessage = sanitizeInput(message, 5000)
 
     // ── Send notification email to owner ─────────────────────
-    await resend.emails.send({
+    const adminResult = await resend.emails.send({
       from: EMAIL_FROM_CONTACT,
       to: EMAIL_NOTIFY_TO,
       subject: `New Inquiry: ${safeInquiryType} from ${safeName}`,
@@ -54,9 +55,13 @@ export async function POST(req: Request) {
       `,
     })
 
+    if (adminResult.error) {
+      console.error('[Contact Admin Email Error]', adminResult.error)
+    }
+
     // ── Send auto-reply to the user ──────────────────────────
-    await resend.emails.send({
-      from: `${OWNER_NAME} <hello@rq-ismail.dev>`,
+    const clientResult = await resend.emails.send({
+      from: EMAIL_FROM_CONTACT,
       to: safeEmail,
       subject: 'Thanks for reaching out',
       html: `
@@ -73,6 +78,10 @@ export async function POST(req: Request) {
         </div>
       `,
     })
+
+    if (clientResult.error) {
+      console.error('[Contact Client Email Error]', clientResult.error)
+    }
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (err: unknown) {

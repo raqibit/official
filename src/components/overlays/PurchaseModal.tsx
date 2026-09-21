@@ -20,6 +20,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CloseIcon, BackChevronIcon } from '@/components/icons'
+import { OWNER_EMAIL } from '@/data/site'
 
 // ── Environment-driven payment details ────────────────────────────────────────
 // Using NEXT_PUBLIC_ prefix so they're available on the client.
@@ -153,7 +154,7 @@ export function PurchaseModal({
                       <div><span className="text-gray-500">Account:</span> {BANK_ACCOUNT}</div>
                       <div><span className="text-gray-500">Name:</span> {BANK_HOLDER}</div>
                       <p className="text-xs text-gray-500 mt-4 font-sans">
-                        Please send proof of payment to rq.ismaeel@gmail.com after transfer.
+                        Please send proof of payment to {OWNER_EMAIL} after transfer.
                       </p>
                     </div>
                   )}
@@ -164,7 +165,7 @@ export function PurchaseModal({
                       <div><span className="text-gray-500">Opay Number:</span> {OPAY_NUMBER}</div>
                       <div><span className="text-gray-500">Name:</span> {OPAY_HOLDER}</div>
                       <p className="text-xs text-gray-500 mt-4 font-sans">
-                        Please send proof of payment to rq.ismaeel@gmail.com after transfer.
+                        Please send proof of payment to {OWNER_EMAIL} after transfer.
                       </p>
                     </div>
                   )}

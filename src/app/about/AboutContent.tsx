@@ -18,6 +18,7 @@ import { motion, type Variants } from 'framer-motion'
 import { Container } from '@/components/layout/Container'
 import { socialLinks } from '@/data/socials'
 import { timeline, skills } from '@/data/about'
+import { OWNER_EMAIL } from '@/data/site'
 import { MailIcon } from '@/components/icons'
 
 const portraitImage = '/images/portrait.jpg'
@@ -149,7 +150,7 @@ export function AboutContent() {
                 </Link>
               ))}
               <Link
-                href="mailto:rq.ismaeel@gmail.com"
+                href={`mailto:${OWNER_EMAIL}`}
                 className="group flex items-center justify-center w-11 h-11 rounded-full border border-[rgba(255,255,255,0.05)] hover:border-[rgba(0,229,255,0.4)] transition-all duration-500"
                 aria-label="Email"
               >

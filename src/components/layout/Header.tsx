@@ -68,7 +68,7 @@ function MobileNavigation(props: React.ComponentPropsWithoutRef<typeof Popover>)
       </PopoverButton>
       <PopoverBackdrop
         transition
-        className="fixed inset-0 z-50 bg-zinc-800/40 backdrop-blur-xs duration-150 data-closed:opacity-0 data-enter:ease-out data-leave:ease-in dark:bg-black/80"
+        className="fixed inset-0 z-50 bg-zinc-800/40 backdrop-blur-xs duration-150 data-closed:opacity-0 data-enter:ease-out data-leave:ease-in"
       />
       <PopoverPanel
         focus
@@ -169,7 +169,7 @@ function Avatar({
         height={large ? 64 : 36}
         sizes={large ? '4rem' : '2.25rem'}
         className={clsx(
-          'rounded-full bg-zinc-100 object-cover dark:bg-zinc-800 transition-all duration-300',
+          'rounded-full bg-zinc-800 object-cover transition-all duration-300',
           large ? 'h-16 w-16' : 'h-9 w-9',
           isHovered && 'ring-2 ring-[#00e5ff]/60 shadow-[0_0_16px_rgba(0,229,255,0.35)]',
         )}

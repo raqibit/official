@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
-import { Resend } from 'resend'
+import { getResendClient } from '@/lib/email'
 import { isValidEmail, sanitizeInput } from '@/lib/sanitize'
-import { EMAIL_FROM_NEWSLETTER, EMAIL_NOTIFY_TO, OWNER_NAME } from '@/data/site'
+import { EMAIL_FROM_NEWSLETTER, EMAIL_NOTIFY_TO, OWNER_NAME, SITE_URL } from '@/data/site'
 
 /**
  * POST /api/newsletter
@@ -12,7 +12,8 @@ import { EMAIL_FROM_NEWSLETTER, EMAIL_NOTIFY_TO, OWNER_NAME } from '@/data/site'
  *  3. Sends a notification email to the site owner
  */
 export async function POST(req: Request) {
-  const resend = new Resend(process.env.RESEND_API_KEY)
+  const resend = getResendClient()
+
   try {
     const { email } = await req.json()
 
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
     const safeEmail = sanitizeInput(email, 320)
 
     // ── Send welcome confirmation to subscriber ──────────────
-    await resend.emails.send({
+    const welcomeResult = await resend.emails.send({
       from: EMAIL_FROM_NEWSLETTER,
       to: safeEmail,
       subject: `You're subscribed — ${OWNER_NAME}`,
@@ -35,23 +36,31 @@ export async function POST(req: Request) {
           <p style="color: #888; line-height: 1.7; font-size: 15px; margin: 0 0 32px;">
             Thanks for subscribing. You'll hear from me when I ship new projects, publish hardware experiments, or write something worth reading. No spam — ever.
           </p>
-          <a href="https://rq-ismail.dev/projects" style="display: inline-block; background: #00e5ff; color: #000; font-weight: 600; font-size: 13px; padding: 12px 28px; letter-spacing: 0.05em; text-decoration: none; text-transform: uppercase;">
+          <a href="${SITE_URL}/projects" style="display: inline-block; background: #00e5ff; color: #000; font-weight: 600; font-size: 13px; padding: 12px 28px; letter-spacing: 0.05em; text-decoration: none; text-transform: uppercase;">
             View My Work →
           </a>
           <p style="color: #444; font-size: 12px; margin-top: 48px; border-top: 1px solid #1a1a1a; padding-top: 24px;">
-            You subscribed at rq-ismail.dev · <a href="https://rq-ismail.dev" style="color: #00e5ff; text-decoration: none;">Unsubscribe</a>
+            You subscribed at ${SITE_URL.replace(/^https?:\/\//, '')} · <a href="${SITE_URL}" style="color: #00e5ff; text-decoration: none;">Unsubscribe</a>
           </p>
         </div>
       `,
     })
 
+    if (welcomeResult.error) {
+      console.error('[Newsletter Welcome Email Error]', welcomeResult.error)
+    }
+
     // ── Notify site owner ────────────────────────────────────
-    await resend.emails.send({
-      from: 'Newsletter <hello@rq-ismail.dev>',
+    const notifyResult = await resend.emails.send({
+      from: EMAIL_FROM_NEWSLETTER,
       to: EMAIL_NOTIFY_TO,
       subject: `New subscriber: ${safeEmail}`,
       html: `<p>New newsletter subscriber: <strong>${safeEmail}</strong></p>`,
     })
+
+    if (notifyResult.error) {
+      console.error('[Newsletter Notify Email Error]', notifyResult.error)
+    }
 
     return NextResponse.json({ success: true })
   } catch (err: unknown) {

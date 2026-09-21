@@ -10,8 +10,11 @@ export const SITE_URL =
 
 /** Owner / brand identity */
 export const OWNER_NAME = 'Raqīb Ismāʿīl'
-export const OWNER_EMAIL = 'rq.ismaeel@gmail.com'
+export const OWNER_EMAIL = 'raqibit3@gmail.com'
 export const OWNER_TITLE = 'Software Engineer'
+
+/** Canonical domain — used in email templates and metadata fallbacks */
+export const SITE_DOMAIN = 'raqibit.io'
 
 /** Geographic + timezone info shown in footer and contact section */
 export const LOCATION = 'Lagos, Nigeria'

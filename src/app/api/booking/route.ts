@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
 import { google } from 'googleapis'
 import { getGoogleAuth, CALENDAR_ID, TIME_START, TIME_END } from '@/lib/googleCalendar'
-import { Resend } from 'resend'
+import { getResendClient } from '@/lib/email'
 import crypto from 'crypto'
 import { escapeHtml, isValidEmail, sanitizeInput } from '@/lib/sanitize'
-import { EMAIL_FROM_BOOKING, EMAIL_NOTIFY_TO, TIMEZONE_IANA } from '@/data/site'
+import { EMAIL_FROM_BOOKING, EMAIL_NOTIFY_TO, OWNER_NAME, TIMEZONE_IANA } from '@/data/site'
 
 /**
  * POST /api/booking
@@ -16,7 +16,7 @@ import { EMAIL_FROM_BOOKING, EMAIL_NOTIFY_TO, TIMEZONE_IANA } from '@/data/site'
  *  4. Inserts Google Calendar event with Meet link
  */
 export async function POST(req: Request) {
-  const resend = new Resend(process.env.RESEND_API_KEY)
+  const resend = getResendClient()
 
   try {
     const body = await req.json()
@@ -103,7 +103,7 @@ export async function POST(req: Request) {
       const clientEmail = await resend.emails.send({
         from: EMAIL_FROM_BOOKING,
         to: safeEmail,
-        subject: `Booking Confirmed: Project Sync with Raqīb Ismāʿīl`,
+        subject: `Booking Confirmed: Project Sync with ${OWNER_NAME}`,
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #111;">
             <h2>Session Confirmed</h2>
