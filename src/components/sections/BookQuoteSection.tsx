@@ -88,7 +88,19 @@ function useBookingForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, date: dateStr, timeSlot: selectedSlot }),
       })
-      if (!res.ok) throw new Error((await res.json()).error || 'Submission failed')
+
+      // Safely parse JSON — the server may return an empty body on crash
+      let data: { error?: string; success?: boolean } = {}
+      try {
+        data = await res.json()
+      } catch {
+        // Response body wasn't valid JSON (empty body, HTML error page, etc.)
+      }
+
+      if (!res.ok) {
+        throw new Error(data.error || `Booking failed (${res.status})`)
+      }
+
       setStatus('success')
     } catch (e: unknown) {
       setStatus('error')
