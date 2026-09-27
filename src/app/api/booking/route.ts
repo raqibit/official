@@ -91,9 +91,6 @@ export async function POST(req: Request) {
     }
 
     // ── Send notification emails (non-blocking) ──────────────
-    // Without a verified domain, Resend only delivers to your own
-    // registered email. We send admin notification first (always works),
-    // then attempt client confirmation (may fail in testing mode).
     try {
       const resend = getResendClient()
 
@@ -103,41 +100,28 @@ export async function POST(req: Request) {
         to: EMAIL_NOTIFY_TO,
         subject: `New Booking: ${safeName} (${safeProjectType})`,
         html: `
-          <h2>New Booking Request</h2>
-          <p><strong>Booking ID:</strong> ${bookingId}</p>
-          <p><strong>Name:</strong> ${escapeHtml(safeName)}</p>
-          <p><strong>Email:</strong> ${escapeHtml(safeEmail)}</p>
-          <p><strong>Phone:</strong> ${escapeHtml(safePhone) || 'N/A'}</p>
-          <p><strong>Project:</strong> ${escapeHtml(safeProjectType)}</p>
-          <p><strong>Date & Time:</strong> ${escapeHtml(date)} @ ${TIME_START[timeSlot]} (GMT+1)</p>
-          <p><strong>Message:</strong><br/>${escapeHtml(safeMessage) || 'N/A'}</p>
+          <div style="font-family: sans-serif; max-width: 600px;">
+            <h2>New Booking Request</h2>
+            <p><strong>Booking ID:</strong> ${bookingId}</p>
+            <p><strong>Name:</strong> ${escapeHtml(safeName)}</p>
+            <p><strong>Email:</strong> ${escapeHtml(safeEmail)}</p>
+            <p><strong>Phone:</strong> ${escapeHtml(safePhone) || 'N/A'}</p>
+            <p><strong>Project:</strong> ${escapeHtml(safeProjectType)}</p>
+            <p><strong>Date & Time:</strong> ${escapeHtml(date)} @ ${TIME_START[timeSlot]} (GMT+1)</p>
+            <p><strong>Message:</strong><br/>${escapeHtml(safeMessage) || 'N/A'}</p>
+            ${safePhone ? `
+            <div style="margin-top: 24px;">
+              <a href="https://wa.me/${safePhone.replace(/[^0-9]/g, '')}" style="background-color: #25D366; color: white; padding: 10px 16px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                Reply on WhatsApp
+              </a>
+            </div>
+            ` : ''}
+          </div>
         `,
       })
 
       if (adminEmail.error) {
         console.error('[Resend Admin Error]', adminEmail.error)
-      }
-
-      // 2. Client confirmation — will fail if domain not verified
-      //    and client email ≠ your registered Resend email
-      const clientEmail = await resend.emails.send({
-        from: EMAIL_FROM_BOOKING,
-        to: safeEmail,
-        subject: `Booking Confirmed: Project Sync with ${OWNER_NAME}`,
-        html: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #111;">
-            <h2>Session Confirmed</h2>
-            <p>Hi ${escapeHtml(safeName)},</p>
-            <p>Thanks for reaching out! Your project sync session is confirmed for <strong>${escapeHtml(date)} at ${TIME_START[timeSlot]} (GMT+1)</strong>.</p>
-            <p>You should also receive a Google Calendar invitation shortly containing the Google Meet video link for our call.</p>
-            <p>Looking forward to discussing your project!<br/><br/>Best,<br/>${OWNER_NAME}</p>
-          </div>
-        `,
-      })
-
-      if (clientEmail.error) {
-        // Expected in Resend testing mode — not a real error
-        console.warn('[Resend Client Email]', clientEmail.error.message || clientEmail.error)
       }
     } catch (emailError: unknown) {
       const msg = emailError instanceof Error ? emailError.message : String(emailError)

@@ -155,7 +155,7 @@ export function BookQuoteSection() {
       <div className="absolute right-0 top-1/3 w-[40vw] h-[40vh] bg-[#00e5ff] opacity-[0.03] rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute left-1/4 bottom-0 w-[30vw] h-[30vh] bg-[#7c3aed] opacity-[0.04] rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-12 xl:px-20 grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 
         {/* Left Column: Header & Newsletter */}
         <div className="flex flex-col gap-12">

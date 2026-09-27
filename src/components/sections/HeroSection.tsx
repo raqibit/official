@@ -92,8 +92,9 @@ export function HeroSection() {
         style={{ background: 'radial-gradient(circle, #00e5ff 0%, transparent 70%)' }}
       />
 
-      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
+      {/* Consistent padding with all other sections */}
+      <div className="relative w-full max-w-[1400px] mx-auto px-6 lg:px-12 xl:px-20">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-x-14">
 
           {/* ── LEFT: Text content ── */}
           <motion.div
@@ -110,9 +111,10 @@ export function HeroSection() {
             </motion.div>
 
             <motion.header variants={item} className="mb-8">
-              <h1 className="text-[clamp(3rem,7vw,5rem)] font-light leading-[1] tracking-tighter text-white">
+              <h1 className="text-[clamp(2.5rem,7vw,5rem)] font-light leading-[1] tracking-tighter text-white">
                 Software<br />
-                &nbsp; Engineer<span className="text-[#00e5ff]">.</span>
+                <span className="ml-4 sm:ml-6">Engineer</span>
+                <span className="text-[#00e5ff]">.</span>
               </h1>
             </motion.header>
 
@@ -123,7 +125,7 @@ export function HeroSection() {
               </p>
             </motion.div>
 
-            <motion.div variants={item} className="flex flex-wrap items-center gap-6 mb-16">
+            <motion.div variants={item} className="flex flex-wrap items-center gap-4 sm:gap-6 mb-12 sm:mb-16">
               <Link
                 href="/projects"
                 data-cursor="VIEW"
@@ -166,7 +168,7 @@ export function HeroSection() {
             {/* Stat card — years & projects */}
             <motion.div
               variants={item}
-              className="mt-16 flex items-center gap-10"
+              className="mt-12 sm:mt-16 flex items-center gap-10"
             >
               <div className="flex flex-col gap-1">
                 <div className="text-3xl font-light text-white tracking-tighter">3+</div>
@@ -187,21 +189,6 @@ export function HeroSection() {
             animate="show"
             className="mt-14 hidden sm:flex justify-center gap-3 sm:-mt-44 sm:justify-start sm:gap-6 sm:pl-20 lg:mt-0 lg:pl-0 relative"
           >
-            {/* Floating CV Link */}
-            <div className="absolute -top-12 right-0 hidden lg:block">
-              <a
-                href="/rq-ismail-resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-2 text-[10px] font-mono tracking-[0.2em] uppercase text-gray-500 hover:text-white transition-colors"
-              >
-                View CV
-                <svg className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-                </svg>
-              </a>
-            </div>
-
             <div className="w-24 sm:w-32 lg:w-44 flex-none space-y-4 sm:space-y-6 pt-16 sm:pt-80 lg:order-last lg:pt-36 xl:order-0 xl:pt-80">
               <HeroImage src="/images/hero_software.jpg" alt="Code editor showing a software project" />
             </div>

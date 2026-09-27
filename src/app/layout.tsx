@@ -69,7 +69,7 @@ export default function RootLayout({
       className={`h-full antialiased ${spaceGrotesk.variable} ${playfairDisplay.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
-      <body className="flex h-full bg-[#0a0a0a] text-[#f0f0f0]">
+      <body className="flex flex-col h-full bg-[#0a0a0a] text-[#f0f0f0] overflow-x-hidden">
         <Providers>
           <MagneticCursor />
           <div className="flex w-full">
