@@ -23,6 +23,8 @@ export type Project = {
   review: string
   /** Price in USD. 0 means "not for sale". */
   price: number
+  /** Link to the digital asset delivered upon purchase */
+  deliverableUrl: string
   accentColor: string
   /** If true, the card spans 2 columns in the projects grid. */
   wide: boolean
@@ -67,6 +69,7 @@ export const getProjects = cache((): Project[] => {
         techStack: data.techStack ?? [],
         review: data.review ?? '',
         price: data.price ?? 0,
+        deliverableUrl: data.deliverableUrl ?? '',
         accentColor: data.accentColor ?? '#ffffff',
         wide: data.wide ?? false,
         order: data.order ?? 99,

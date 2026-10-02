@@ -186,6 +186,9 @@ const ProjectCard = memo(function ProjectCard({
   )
 })
 
+import { Suspense } from 'react'
+import { PaymentSuccessToast } from './PaymentSuccessToast'
+
 // ── ProjectsClient ────────────────────────────────────────────────────────────
 
 export function ProjectsClient({ projects }: { projects: ProjectType[] }) {
@@ -196,6 +199,11 @@ export function ProjectsClient({ projects }: { projects: ProjectType[] }) {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] pt-32 pb-28">
+      {/* ── Payment Success Toast ───────────────────── */}
+      <Suspense fallback={null}>
+        <PaymentSuccessToast />
+      </Suspense>
+
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12 xl:px-20">
 
         {/* ── Page Header ─────────────────────────────── */}

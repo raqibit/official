@@ -338,6 +338,7 @@ export function ProjectDetailOverlay({
         isOpen={isPurchaseOpen}
         onClose={() => setIsPurchaseOpen(false)}
         project={{
+          id: project.id,
           name: project.name,
           price: project.price,
           accentColor: project.accentColor,

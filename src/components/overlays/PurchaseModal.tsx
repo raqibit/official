@@ -19,8 +19,9 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { CloseIcon, BackChevronIcon } from '@/components/icons'
+import { CloseIcon, BackChevronIcon, SpinnerIcon } from '@/components/icons'
 import { OWNER_EMAIL } from '@/data/site'
+import { GlassInput } from '@/components/ui/booking/GlassForms'
 
 // ── Environment-driven payment details ────────────────────────────────────────
 // Using NEXT_PUBLIC_ prefix so they're available on the client.
@@ -39,14 +40,60 @@ export function PurchaseModal({
 }: {
   isOpen: boolean
   onClose: () => void
-  project: { name: string; price: number; accentColor: string }
+  project: { id: string; name: string; price: number; accentColor: string }
 }) {
   const [selectedMethod, setSelectedMethod] = useState<'paystack' | 'bank' | 'opay' | null>(null)
+  const [email, setEmail] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
 
   /** Reset method selection when closing so it's clean on reopen */
   const handleClose = () => {
     onClose()
-    setTimeout(() => setSelectedMethod(null), 300)
+    setTimeout(() => {
+      setSelectedMethod(null)
+      setEmail('')
+      setErrorMsg('')
+      setIsLoading(false)
+    }, 300)
+  }
+
+  const handlePaystackCheckout = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email) {
+      setErrorMsg('Please enter your email address.')
+      return
+    }
+
+    setIsLoading(true)
+    setErrorMsg('')
+
+    try {
+      const res = await fetch('/api/paystack/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projectId: project.id,
+          projectName: project.name,
+          price: project.price,
+          email,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to initialize checkout')
+      }
+
+      // Redirect to Paystack's secure checkout URL
+      if (data.authorization_url) {
+        window.location.href = data.authorization_url
+      }
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'An error occurred during checkout.')
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -81,6 +128,7 @@ export function PurchaseModal({
                 onClick={handleClose}
                 aria-label="Close"
                 className="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors"
+                disabled={isLoading}
               >
                 <CloseIcon />
               </button>
@@ -128,8 +176,12 @@ export function PurchaseModal({
                 >
                   {/* Back button */}
                   <button
-                    onClick={() => setSelectedMethod(null)}
+                    onClick={() => {
+                      setSelectedMethod(null)
+                      setErrorMsg('')
+                    }}
                     className="text-xs font-mono text-gray-500 mb-6 flex items-center gap-1 hover:text-white transition-colors"
+                    disabled={isLoading}
                   >
                     <BackChevronIcon />
                     Back to methods
@@ -137,14 +189,38 @@ export function PurchaseModal({
 
                   {/* Paystack */}
                   {selectedMethod === 'paystack' && (
-                    <div className="text-center py-4">
-                      <p className="text-sm text-gray-400 mb-6">
-                        You will be redirected to the secure Paystack checkout portal.
+                    <form onSubmit={handlePaystackCheckout} className="space-y-4">
+                      <p className="text-sm text-gray-400 mb-4">
+                        Enter your email address. The project files will be sent here automatically upon payment.
                       </p>
-                      <button className="w-full bg-[#0ba4db] text-white py-4 rounded font-bold font-sans">
-                        Proceed to Checkout
+
+                      <GlassInput
+                        label="Email Address"
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="hello@example.com"
+                        disabled={isLoading}
+                      />
+
+                      {errorMsg && <p className="text-red-400 text-sm mt-2">{errorMsg}</p>}
+
+                      <button
+                        type="submit"
+                        disabled={isLoading}
+                        className="w-full bg-[#0ba4db] hover:bg-[#098bbd] text-white py-4 rounded font-bold font-sans transition-colors flex justify-center items-center gap-2 mt-6 disabled:opacity-50"
+                      >
+                        {isLoading ? (
+                          <>
+                            <SpinnerIcon className="w-5 h-5 text-white animate-spin" />
+                            Redirecting...
+                          </>
+                        ) : (
+                          'Proceed to Checkout'
+                        )}
                       </button>
-                    </div>
+                    </form>
                   )}
 
                   {/* Bank transfer — details from environment variables */}
