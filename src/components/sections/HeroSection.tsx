@@ -14,25 +14,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion, type Variants } from 'framer-motion'
 import { socialLinks } from '@/data/socials'
-
-// ── Animation variants ────────────────────────────────────────────────────────
-
-const container: Variants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.15 },
-  },
-}
-
-const item: Variants = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
-}
+import { STAGGER_CONTAINER, FADE_IN_UP, EASE } from '@/lib/animations'
 
 const imageVariant: Variants = {
   hidden: { opacity: 0, scale: 1.04 },
-  show: { opacity: 1, scale: 1, transition: { duration: 1.2, ease: [0.22, 1, 0.36, 1] } },
+  show: { opacity: 1, scale: 1, transition: { duration: 1.2, ease: EASE } },
 }
 
 // ── Social link button ────────────────────────────────────────────────────────
@@ -84,7 +70,7 @@ function HeroImage({ src, alt }: { src: string; alt: string }) {
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[calc(100vh-80px)] flex items-center overflow-hidden">
+    <section className="relative min-h-[100dvh] pt-32 pb-16 lg:pt-0 lg:pb-0 flex items-center overflow-hidden">
       {/* Subtle radial glow behind content */}
       <div
         aria-hidden
@@ -98,19 +84,19 @@ export function HeroSection() {
 
           {/* ── LEFT: Text content ── */}
           <motion.div
-            variants={container}
+            variants={STAGGER_CONTAINER}
             initial="hidden"
             animate="show"
             className="relative w-full lg:max-w-xl lg:shrink-0 xl:max-w-2xl flex flex-col gap-0"
           >
-            <motion.div variants={item} className="flex items-center gap-4 mb-8">
+            <motion.div variants={FADE_IN_UP} className="flex items-center gap-4 mb-8">
               <span className="block h-px w-10 bg-white/20" />
               <p className="text-xs text-gray-400 font-mono tracking-[0.2em] uppercase">
                 Raqīb Ismāʿīl
               </p>
             </motion.div>
 
-            <motion.header variants={item} className="mb-8">
+            <motion.header variants={FADE_IN_UP} className="mb-8">
               <h1 className="text-[clamp(2.5rem,7vw,5rem)] font-light leading-[1] tracking-tighter text-white">
                 Software<br />
                 <span className="ml-4 sm:ml-6">Engineer</span>
@@ -118,14 +104,14 @@ export function HeroSection() {
               </h1>
             </motion.header>
 
-            <motion.div variants={item} className="mb-12">
+            <motion.div variants={FADE_IN_UP} className="mb-12">
               <p className="text-lg text-gray-400 font-light leading-relaxed max-w-xl">
                 Architecting resilient backend systems and building high-performance, 
                 pixel-perfect interfaces for the modern web.
               </p>
             </motion.div>
 
-            <motion.div variants={item} className="flex flex-wrap items-center gap-4 sm:gap-6 mb-12 sm:mb-16">
+            <motion.div variants={FADE_IN_UP} className="flex flex-wrap items-center gap-4 sm:gap-6 mb-12 sm:mb-16">
               <Link
                 href="/projects"
                 data-cursor="VIEW"
@@ -154,7 +140,7 @@ export function HeroSection() {
               </a>
             </motion.div>
 
-            <motion.div variants={item} className="flex items-center gap-5">
+            <motion.div variants={FADE_IN_UP} className="flex items-center gap-5">
               {socialLinks.map((social) => (
                 <SocialLink
                   key={social.label}
@@ -167,7 +153,7 @@ export function HeroSection() {
 
             {/* Stat card — years & projects */}
             <motion.div
-              variants={item}
+              variants={FADE_IN_UP}
               className="mt-12 sm:mt-16 flex items-center gap-10"
             >
               <div className="flex flex-col gap-1">

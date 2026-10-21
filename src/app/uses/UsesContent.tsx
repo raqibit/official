@@ -1,9 +1,8 @@
 'use client'
 
-import { motion, type Variants } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Container } from '@/components/layout/Container'
-
-const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number]
+import { STAGGER_CONTAINER, FADE_IN_UP } from '@/lib/animations'
 
 type ToolProps = {
   title: string
@@ -14,10 +13,7 @@ type ToolProps = {
 function Tool({ title, href, children }: ToolProps) {
   return (
     <motion.li 
-      variants={{
-        hidden: { opacity: 0, y: 15 },
-        show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } }
-      } as Variants}
+      variants={FADE_IN_UP}
       className="group relative flex flex-col sm:flex-row gap-6 py-10 border-b border-[rgba(255,255,255,0.05)] last:border-0"
     >
       <div className="flex-1">
@@ -155,18 +151,7 @@ const CATEGORIES = [
   }
 ]
 
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.1 }
-  }
-}
 
-const headerVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: EASE } }
-}
 
 export function UsesContent() {
   return (
@@ -174,7 +159,7 @@ export function UsesContent() {
       
       {/* ── Page Header ── */}
       <motion.div 
-        variants={headerVariants}
+        variants={FADE_IN_UP}
         initial="hidden"
         animate="show"
         className="max-w-2xl mb-24 lg:mb-32"
@@ -228,7 +213,7 @@ export function UsesContent() {
             {/* List of Tools */}
             <div className="lg:col-span-8 lg:col-start-5">
               <motion.ul 
-                variants={containerVariants}
+                variants={STAGGER_CONTAINER}
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, margin: "-50px" }}

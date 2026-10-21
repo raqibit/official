@@ -13,7 +13,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRef, useCallback } from 'react'
-import { motion, type Variants } from 'framer-motion'
+import { motion } from 'framer-motion'
+import { STAGGER_CONTAINER, FADE_IN_UP, EASE } from '@/lib/animations'
 
 import { Container } from '@/components/layout/Container'
 import { socialLinks } from '@/data/socials'
@@ -22,21 +23,6 @@ import { OWNER_EMAIL } from '@/data/site'
 import { MailIcon } from '@/components/icons'
 
 const portraitImage = '/images/portrait.jpg'
-
-const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number]
-
-const container: Variants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
-}
-
-const item: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
-}
 
 export function AboutContent() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -66,14 +52,14 @@ export function AboutContent() {
 
         {/* ── LEFT COL (Text content) ── */}
         <motion.div
-          variants={container}
+          variants={STAGGER_CONTAINER}
           initial="hidden"
           animate="show"
           className="lg:col-span-5 flex flex-col gap-16 lg:order-first"
         >
           {/* Header & Bio */}
           <div>
-            <motion.div variants={item} className="flex items-center gap-4 mb-10">
+            <motion.div variants={FADE_IN_UP} className="flex items-center gap-4 mb-10">
               <span className="block h-px w-8 bg-gray-700" />
               <span className="font-mono text-xs tracking-[0.2em] uppercase text-gray-600" style={{ fontFamily: 'var(--font-mono)' }}>
                 About Me
@@ -81,7 +67,7 @@ export function AboutContent() {
             </motion.div>
 
             <motion.h1
-              variants={item}
+              variants={FADE_IN_UP}
               className="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-8 leading-[1.1]"
               style={{ fontFamily: 'var(--font-sans)' }}
             >
@@ -91,7 +77,7 @@ export function AboutContent() {
               </span> systems.
             </motion.h1>
 
-            <motion.div variants={item} className="space-y-6 text-[15px] text-gray-500 leading-[1.7]" style={{ fontFamily: 'var(--font-sans)' }}>
+            <motion.div variants={FADE_IN_UP} className="space-y-6 text-[15px] text-gray-500 leading-[1.7]" style={{ fontFamily: 'var(--font-sans)' }}>
               <p>
                 I&apos;m a Lagos-based software engineer and microsoldering specialist. I operate at the intersection of
                 AI-driven software development, premium visual design, and hardware-level diagnostics.
@@ -109,7 +95,7 @@ export function AboutContent() {
           </div>
 
           {/* Skill Bars */}
-          <motion.div variants={item} className="mt-8">
+          <motion.div variants={FADE_IN_UP} className="mt-8">
             <h2 className="text-[10px] font-mono tracking-[0.25em] uppercase text-gray-700 mb-8" style={{ fontFamily: 'var(--font-mono)' }}>Proficiency</h2>
             <div className="space-y-6">
               {skills.map((skill) => (
@@ -134,7 +120,7 @@ export function AboutContent() {
           </motion.div>
 
           {/* Social Links */}
-          <motion.div variants={item}>
+          <motion.div variants={FADE_IN_UP}>
             <h2 className="text-[10px] font-mono tracking-[0.25em] uppercase text-gray-700 mb-6" style={{ fontFamily: 'var(--font-mono)' }}>Find Me Online</h2>
             <div className="flex flex-wrap gap-4">
               {socialLinks.map(({ href, icon: Icon, label }) => (
@@ -167,7 +153,7 @@ export function AboutContent() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            transition={{ duration: 1, ease: EASE, delay: 0.2 }}
             className="relative group overflow-hidden rounded-xl bg-gray-900/5 max-w-[400px] ml-auto lg:mt-12 rotate-2 hover:rotate-0 transition-transform duration-700"
             ref={containerRef}
             onMouseMove={handleMouseMove}

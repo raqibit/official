@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
 
 export function MagneticCursor() {
@@ -20,9 +20,9 @@ export function MagneticCursor() {
   const [isVisible, setIsVisible] = useState(false)
   const [isTouchDevice, setIsTouchDevice] = useState(true) // default true = hidden until confirmed pointer device
 
-  useEffect(() => {
-    // Detect touch device on client only
-    setTimeout(() => setIsTouchDevice(window.matchMedia('(hover: none)').matches), 0)
+  useLayoutEffect(() => {
+    // matchMedia read synchronously after mount — no setTimeout needed
+    setIsTouchDevice(window.matchMedia('(hover: none)').matches)
   }, [])
 
   useEffect(() => {

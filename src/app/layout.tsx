@@ -37,6 +37,21 @@ export const metadata: Metadata = {
   },
   description:
     'Software engineer focused on building high-performance interfaces and scalable systems.',
+  keywords: [
+    'software engineer',
+    'full stack developer',
+    'Next.js',
+    'React',
+    'TypeScript',
+    'UI design',
+    'Lagos Nigeria',
+    'microsoldering',
+    'hardware repair',
+    'AI development',
+  ],
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -44,6 +59,14 @@ export const metadata: Metadata = {
     title: 'Raqīb Ismāʿīl — Software Engineer',
     description:
       'Software engineer focused on building high-performance interfaces and scalable systems.',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1792,
+        height: 1024,
+        alt: 'Raqīb Ismāʿīl — Software Engineer',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
@@ -51,6 +74,7 @@ export const metadata: Metadata = {
     title: 'Raqīb Ismāʿīl — Software Engineer',
     description:
       'Software engineer focused on building high-performance interfaces and scalable systems.',
+    images: ['/og-image.jpg'],
   },
 }
 

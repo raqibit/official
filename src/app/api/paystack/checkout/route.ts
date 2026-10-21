@@ -36,6 +36,7 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         email,
         amount: amountInKobo,
+        currency: 'USD',
         callback_url: `${SITE_URL}/projects?payment=success&projectId=${projectId}`,
         metadata: {
           projectId,

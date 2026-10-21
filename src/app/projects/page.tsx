@@ -4,7 +4,18 @@ import { ProjectsClient } from './ProjectsClient'
 
 export const metadata: Metadata = {
   title: 'Projects',
-  description: 'A collection of projects spanning frontend UI engineering to full-stack applications.',
+  description:
+    'A curated collection of software projects — from full-stack web applications and AI pipelines to premium UI/UX systems and hardware diagnostics tools.',
+  openGraph: {
+    title: 'Projects — Raqīb Ismāʿīl',
+    description:
+      'Full-stack apps, AI pipelines, premium UI systems, and hardware tools built by Raqīb Ismāʿīl.',
+  },
+  twitter: {
+    title: 'Projects — Raqīb Ismāʿīl',
+    description:
+      'Full-stack apps, AI pipelines, premium UI systems, and hardware tools.',
+  },
 }
 
 export default async function ProjectsPage() {

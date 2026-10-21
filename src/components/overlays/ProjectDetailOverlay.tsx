@@ -17,6 +17,7 @@ import { type Project } from '@/lib/mdx'
 import { PurchaseModal } from '@/components/overlays/PurchaseModal'
 import { CloseIcon, ExternalLinkIcon, GitHubMark, ChevronIcon } from '@/components/icons'
 import { TechTag } from '@/components/ui/TechTag'
+import { EASE } from '@/lib/animations'
 
 // ── Image Gallery ─────────────────────────────────────────────────────────────
 
@@ -146,7 +147,7 @@ export function ProjectDetailOverlay({
         initial={{ opacity: 0, y: '4%' }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: '3%' }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.4, ease: EASE }}
         className="fixed inset-x-0 bottom-0 z-[91] flex flex-col bg-[#0f0f0f] border-t border-white/[0.06] overflow-hidden"
         style={{ height: '92vh', maxHeight: '92vh' }}
         aria-modal="true"

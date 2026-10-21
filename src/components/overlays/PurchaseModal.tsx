@@ -32,6 +32,10 @@ const BANK_ACCOUNT = process.env.NEXT_PUBLIC_BANK_ACCOUNT || '—'
 const BANK_HOLDER = process.env.NEXT_PUBLIC_BANK_HOLDER || 'Raqīb Ismāʿīl'
 const OPAY_NUMBER = process.env.NEXT_PUBLIC_OPAY_NUMBER || '—'
 const OPAY_HOLDER = process.env.NEXT_PUBLIC_OPAY_HOLDER || 'Raqīb Ismāʿīl'
+const GREY_BANK = process.env.NEXT_PUBLIC_GREY_BANK || 'Grey Finance'
+const GREY_IBAN = process.env.NEXT_PUBLIC_GREY_IBAN || '—'
+const GREY_ROUTING = process.env.NEXT_PUBLIC_GREY_ROUTING || '—'
+const GREY_HOLDER = process.env.NEXT_PUBLIC_GREY_HOLDER || 'Raqīb Ismāʿīl'
 
 export function PurchaseModal({
   isOpen,
@@ -42,7 +46,8 @@ export function PurchaseModal({
   onClose: () => void
   project: { id: string; name: string; price: number; accentColor: string }
 }) {
-  const [selectedMethod, setSelectedMethod] = useState<'paystack' | 'bank' | 'opay' | null>(null)
+  const [selectedMethod, setSelectedMethod] = useState<'paystack' | 'manual' | null>(null)
+  const [manualTab, setManualTab] = useState<'international' | 'local'>('international')
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
@@ -52,6 +57,7 @@ export function PurchaseModal({
     onClose()
     setTimeout(() => {
       setSelectedMethod(null)
+      setManualTab('international')
       setEmail('')
       setErrorMsg('')
       setIsLoading(false)
@@ -154,19 +160,13 @@ export function PurchaseModal({
                     onClick={() => setSelectedMethod('paystack')}
                     className="w-full bg-[#0ba4db] hover:bg-[#098bbd] text-white py-4 rounded font-bold font-sans transition-colors flex items-center justify-center gap-2"
                   >
-                    Pay via Paystack
+                    Pay Online (Paystack)
                   </button>
                   <button
-                    onClick={() => setSelectedMethod('bank')}
+                    onClick={() => setSelectedMethod('manual')}
                     className="w-full bg-[#222] hover:bg-[#333] text-white py-4 rounded font-bold font-sans transition-colors border border-[rgba(255,255,255,0.05)]"
                   >
-                    Bank Transfer
-                  </button>
-                  <button
-                    onClick={() => setSelectedMethod('opay')}
-                    className="w-full bg-[#1dbf73] hover:bg-[#189e5f] text-white py-4 rounded font-bold font-sans transition-colors"
-                  >
-                    Pay via Opay
+                    Manual Bank Transfer
                   </button>
                 </div>
               ) : (
@@ -199,7 +199,7 @@ export function PurchaseModal({
                         type="email"
                         required
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={setEmail}
                         placeholder="hello@example.com"
                         disabled={isLoading}
                       />
@@ -223,25 +223,48 @@ export function PurchaseModal({
                     </form>
                   )}
 
-                  {/* Bank transfer — details from environment variables */}
-                  {selectedMethod === 'bank' && (
-                    <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.05)] p-6 rounded text-sm text-gray-300 font-mono space-y-4">
-                      <div><span className="text-gray-500">Bank:</span> {BANK_NAME}</div>
-                      <div><span className="text-gray-500">Account:</span> {BANK_ACCOUNT}</div>
-                      <div><span className="text-gray-500">Name:</span> {BANK_HOLDER}</div>
-                      <p className="text-xs text-gray-500 mt-4 font-sans">
-                        Please send proof of payment to {OWNER_EMAIL} after transfer.
-                      </p>
-                    </div>
-                  )}
+                  {/* Manual Transfer View */}
+                  {selectedMethod === 'manual' && (
+                    <div className="space-y-6">
+                      <div className="flex bg-black/40 rounded-lg p-1 border border-white/5">
+                        <button
+                          onClick={() => setManualTab('international')}
+                          className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded-md transition-colors ${manualTab === 'international' ? 'bg-[#333] text-white' : 'text-gray-500 hover:text-gray-300'}`}
+                        >
+                          International (USD)
+                        </button>
+                        <button
+                          onClick={() => setManualTab('local')}
+                          className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded-md transition-colors ${manualTab === 'local' ? 'bg-[#333] text-white' : 'text-gray-500 hover:text-gray-300'}`}
+                        >
+                          Local (NGN)
+                        </button>
+                      </div>
 
-                  {/* OPay — details from environment variables */}
-                  {selectedMethod === 'opay' && (
-                    <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.05)] p-6 rounded text-sm text-gray-300 font-mono space-y-4">
-                      <div><span className="text-gray-500">Opay Number:</span> {OPAY_NUMBER}</div>
-                      <div><span className="text-gray-500">Name:</span> {OPAY_HOLDER}</div>
-                      <p className="text-xs text-gray-500 mt-4 font-sans">
-                        Please send proof of payment to {OWNER_EMAIL} after transfer.
+                      {manualTab === 'international' ? (
+                        <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.05)] p-6 rounded text-sm text-gray-300 font-mono space-y-4">
+                          <div><span className="text-gray-500">Bank:</span> {GREY_BANK}</div>
+                          <div><span className="text-gray-500">Account (IBAN):</span> {GREY_IBAN}</div>
+                          <div><span className="text-gray-500">Routing:</span> {GREY_ROUTING}</div>
+                          <div><span className="text-gray-500">Name:</span> {GREY_HOLDER}</div>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.05)] p-6 rounded text-sm text-gray-300 font-mono space-y-4">
+                            <div><span className="text-gray-500">Bank:</span> {BANK_NAME}</div>
+                            <div><span className="text-gray-500">Account:</span> {BANK_ACCOUNT}</div>
+                            <div><span className="text-gray-500">Name:</span> {BANK_HOLDER}</div>
+                          </div>
+                          
+                          <div className="bg-[#0a0a0a] border border-[rgba(255,255,255,0.05)] p-6 rounded text-sm text-gray-300 font-mono space-y-4">
+                            <div><span className="text-gray-500">Opay Number:</span> {OPAY_NUMBER}</div>
+                            <div><span className="text-gray-500">Name:</span> {OPAY_HOLDER}</div>
+                          </div>
+                        </div>
+                      )}
+
+                      <p className="text-xs text-gray-500 mt-4 font-sans text-center bg-white/5 p-3 rounded">
+                        Please send proof of payment to <a href={`mailto:${OWNER_EMAIL}`} className="text-white hover:underline">{OWNER_EMAIL}</a> after transfer. Your files will be manually forwarded upon verification.
                       </p>
                     </div>
                   )}

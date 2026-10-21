@@ -17,6 +17,7 @@ export function GlassInput({
   onChange,
   placeholder,
   required,
+  disabled,
 }: {
   label: string
   type?: string
@@ -24,6 +25,7 @@ export function GlassInput({
   onChange: (v: string) => void
   placeholder?: string
   required?: boolean
+  disabled?: boolean
 }) {
   return (
     <div>
@@ -34,8 +36,10 @@ export function GlassInput({
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
         required={required}
-        className="w-full bg-white/[0.03] border border-white/[0.08] text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-[#00e5ff]/50 focus:ring-1 focus:ring-[#00e5ff]/10 transition-all placeholder-zinc-700 font-mono"
+        disabled={disabled}
+        className="w-full bg-white/[0.03] border border-white/[0.08] text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-[#00e5ff]/50 focus:ring-1 focus:ring-[#00e5ff]/10 transition-all placeholder-zinc-700 font-mono disabled:opacity-50"
       />
     </div>
   )
 }
+

@@ -36,6 +36,9 @@ const ProjectCard = memo(function ProjectCard({
 
   return (
     <motion.div
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${project.name}`}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-80px' }}
@@ -43,7 +46,8 @@ const ProjectCard = memo(function ProjectCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
-      className={`group relative overflow-hidden cursor-pointer rounded-2xl bg-[#111] ${project.wide
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick() } }}
+      className={`group relative overflow-hidden cursor-pointer rounded-2xl bg-[#111] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 ${project.wide
           ? 'sm:col-span-2 aspect-[16/9] sm:aspect-auto sm:h-full'
           : 'col-span-1 aspect-[4/3]'
         }`}
