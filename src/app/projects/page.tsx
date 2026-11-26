@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
-import { getProjects } from '@/lib/mdx'
+import { getPortfolioProjects } from '@/lib/projects'
 import { ProjectsClient } from './ProjectsClient'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Projects',
@@ -19,6 +21,6 @@ export const metadata: Metadata = {
 }
 
 export default async function ProjectsPage() {
-  const projects = getProjects()
+  const projects = await getPortfolioProjects()
   return <ProjectsClient projects={projects} />
 }

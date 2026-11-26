@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { getResendClient } from '@/lib/email'
-import { getProjects } from '@/lib/mdx'
+import { getPortfolioProjects } from '@/lib/projects'
 import { EMAIL_NOTIFY_TO, OWNER_NAME } from '@/data/site'
 
 /**
@@ -60,8 +60,8 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Invalid payload data' }, { status: 400 })
       }
 
-      // Fetch the project to get the deliverableUrl
-      const projects = getProjects()
+      // Fetch the project to get the deliverableUrl (supports both DB and MDX projects)
+      const projects = await getPortfolioProjects()
       const project = projects.find(p => p.id === projectId)
 
       if (!project) {

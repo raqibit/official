@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Project {
+  id String @id @default(cuid())
+
+  // ── GitHub sync fields ──────────────────────────────────────────
+  githubId      Int    @unique
+  githubRepo    String @unique // e.g. "raqibit/natours"
+  githubUrl     String
+  defaultBranch String @default("main")
+  stars         Int    @default(0)
+  forks         Int    @default(0)
+  language      String @default("")
+  topics        String @default("[]") // JSON string array (SQLite has no array type)
+
+  // ── Portfolio display fields ────────────────────────────────────
+  name        String
+  tagline     String @default("")
+  about       String @default("") // AI-generated description
+  accentColor String @default("#00e5ff")
+  techStack   String @default("[]") // JSON string array
+
+  // ── Media ───────────────────────────────────────────────────────
+  thumbnailUrl  String @default("")
+  screenshotUrl String @default("")
+  videoUrl      String @default("")
+  images        String @default("[]") // JSON string array
+
+  // ── URLs ────────────────────────────────────────────────────────
+  liveUrl String @default("")
+
+  // ── Commerce ────────────────────────────────────────────────────
+  price          Float  @default(0)
+  deliverableUrl String @default("")
+
+  // ── Display settings ────────────────────────────────────────────
+  featured   Boolean @default(false)
+  published  Boolean @default(false)
+  order      Int     @default(99)
+  wide       Boolean @default(false)
+  review     String  @default("")
+
+  // ── AI generation timestamps ────────────────────────────────────
+  aiDescriptionAt DateTime?
+  aiThumbnailAt   DateTime?
+  screenshotAt    DateTime?
+
+  // ── Timestamps ──────────────────────────────────────────────────
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  syncedAt  DateTime @default(now())
+}

@@ -5,11 +5,12 @@ import { FeaturedProjects } from '@/components/sections/FeaturedProjects'
 import { ContactSection } from '@/components/sections/ContactSection'
 
 import { BookQuoteSection } from '@/components/sections/BookQuoteSection'
-import { getProjects } from '@/lib/mdx'
+import { getFeaturedPortfolioProjects } from '@/lib/projects'
+
+export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  const allProjects = getProjects()
-  const featuredProjects = allProjects.slice(0, 3)
+  const featuredProjects = await getFeaturedPortfolioProjects(3)
 
   return (
     <>

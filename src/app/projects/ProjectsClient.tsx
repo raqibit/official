@@ -141,13 +141,9 @@ const ProjectCard = memo(function ProjectCard({
           {project.name}
         </h3>
 
-        {/* Tagline + tech + VIEW — revealed on hover */}
-        <motion.div
-          initial={false}
-          animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 6 }}
-          transition={{ duration: 0.22, ease: 'easeOut' }}
-          className="flex flex-col gap-2.5"
-          aria-hidden={!isHovered}
+        {/* Tagline + tech + OPEN — always visible on touch devices, revealed on hover/focus on desktop */}
+        <div
+          className="flex flex-col gap-2.5 opacity-100 translate-y-0 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:translate-y-1.5 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:translate-y-0 [@media(hover:hover)]:group-focus-visible:opacity-100 [@media(hover:hover)]:group-focus-visible:translate-y-0 transition-all duration-300 ease-out"
         >
           <p
             className="text-[11px] md:text-xs text-gray-300 leading-relaxed line-clamp-2"
@@ -184,7 +180,7 @@ const ProjectCard = memo(function ProjectCard({
               OPEN <ArrowIcon className="h-3 w-3" />
             </span>
           </div>
-        </motion.div>
+        </div>
       </div>
     </motion.div>
   )

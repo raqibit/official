@@ -82,6 +82,22 @@ body {
 @media (hover: hover) and (pointer: fine) {
   body { cursor: none; }
   a, button, [role="button"], input, textarea, select, label { cursor: none; }
+
+  .admin-shell,
+  .admin-shell * {
+    cursor: auto;
+  }
+  .admin-shell a,
+  .admin-shell button,
+  .admin-shell [role="button"],
+  .admin-shell select,
+  .admin-shell label {
+    cursor: pointer;
+  }
+  .admin-shell input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+  .admin-shell textarea {
+    cursor: text;
+  }
 }
 
 /* ── Scrollbar ─────────────────────────────────────────────────────────────── */

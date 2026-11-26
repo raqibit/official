@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     const safeWhatsapp = sanitizeInput(whatsapp || '', 30)
     const safeCompany = sanitizeInput(company || '', 200)
     const safeInquiryType = sanitizeInput(inquiryType || 'General', 100)
-    const safeBudget = sanitizeInput(budget || '', 100)
+    const safeBudget = sanitizeInput(budget || 'Not specified', 100)
     const safeMessage = sanitizeInput(message, 5000)
 
     // ── Send notification email to owner ─────────────────────

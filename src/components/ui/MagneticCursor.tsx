@@ -1,9 +1,27 @@
 'use client'
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { usePathname } from 'next/navigation'
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
 
+function subscribeTouchDevice(callback: () => void) {
+  const mq = window.matchMedia('(hover: none)')
+  mq.addEventListener('change', callback)
+  return () => mq.removeEventListener('change', callback)
+}
+
+function getTouchDeviceSnapshot() {
+  return window.matchMedia('(hover: none)').matches
+}
+
+function getTouchDeviceServerSnapshot() {
+  return true
+}
+
 export function MagneticCursor() {
+  const pathname = usePathname()
+  const isAdminRoute = pathname?.startsWith('/admin') ?? false
+
   const cursorRef = useRef<HTMLDivElement>(null)
   const ringRef = useRef<HTMLDivElement>(null)
 
@@ -18,15 +36,14 @@ export function MagneticCursor() {
   const [isHovering, setIsHovering] = useState(false)
   const [isClicking, setIsClicking] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
-  const [isTouchDevice, setIsTouchDevice] = useState(true) // default true = hidden until confirmed pointer device
-
-  useLayoutEffect(() => {
-    // matchMedia read synchronously after mount — no setTimeout needed
-    setIsTouchDevice(window.matchMedia('(hover: none)').matches)
-  }, [])
+  const isTouchDevice = useSyncExternalStore(
+    subscribeTouchDevice,
+    getTouchDeviceSnapshot,
+    getTouchDeviceServerSnapshot
+  )
 
   useEffect(() => {
-    if (isTouchDevice) return
+    if (isTouchDevice || isAdminRoute) return
 
     const onMove = (e: MouseEvent) => {
       mouseX.set(e.clientX)
@@ -72,9 +89,9 @@ export function MagneticCursor() {
       document.removeEventListener('mouseenter', onEnter)
       window.removeEventListener('mouseover', onOver)
     }
-  }, [mouseX, mouseY, isTouchDevice])
+  }, [mouseX, mouseY, isTouchDevice, isAdminRoute])
 
-  if (isTouchDevice) return null
+  if (isTouchDevice || isAdminRoute) return null
 
   return (
     <>

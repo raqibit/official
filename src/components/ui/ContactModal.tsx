@@ -15,7 +15,7 @@ export function ContactModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
     whatsapp: '',
     company: '',
     inquiryType: 'Hire for a software project',
-    budget: 'Select budget...',
+    budget: '',
     message: ''
   })
 
@@ -59,7 +59,7 @@ export function ContactModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
         whatsapp: '',
         company: '',
         inquiryType: 'Hire for a software project',
-        budget: 'Select budget...',
+        budget: '',
         message: ''
       })
     }, 500)
@@ -125,21 +125,31 @@ export function ContactModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div>
                         <label htmlFor="inquiryType" className="block text-[10px] tracking-[0.2em] uppercase text-gray-500 mb-3">I am looking to...</label>
-                        <select id="inquiryType" value={formData.inquiryType} onChange={handleChange} className="w-full bg-black/50 border border-white/[0.05] rounded-none px-4 py-3.5 text-sm text-gray-300 focus:outline-none focus:border-white/20 transition-colors appearance-none">
-                          <option>Hire for a software project</option>
-                          <option>Book a microsoldering repair</option>
-                          <option>General inquiry / Other</option>
-                        </select>
+                        <div className="relative">
+                          <select id="inquiryType" value={formData.inquiryType} onChange={handleChange} className="w-full bg-black/50 border border-white/[0.05] rounded-none pl-4 pr-10 py-3.5 text-sm text-white focus:outline-none focus:border-white/20 transition-colors appearance-none">
+                            <option value="Hire for a software project" className="bg-[#111] text-white">Hire for a software project</option>
+                            <option value="Book a microsoldering repair" className="bg-[#111] text-white">Book a microsoldering repair</option>
+                            <option value="General inquiry / Other" className="bg-[#111] text-white">General inquiry / Other</option>
+                          </select>
+                          <svg className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75} aria-hidden="true">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                          </svg>
+                        </div>
                       </div>
                       <div>
-                        <label htmlFor="budget" className="block text-[10px] tracking-[0.2em] uppercase text-gray-500 mb-3">Budget</label>
-                        <select id="budget" value={formData.budget} onChange={handleChange} className="w-full bg-black/50 border border-white/[0.05] rounded-none px-4 py-3.5 text-sm text-gray-300 focus:outline-none focus:border-white/20 transition-colors appearance-none">
-                          <option>Select budget...</option>
-                          <option>Less than $1,000</option>
-                          <option>$1,000 - $3,000</option>
-                          <option>$3,000 - $10,000</option>
-                          <option>$10,000+</option>
-                        </select>
+                        <label htmlFor="budget" className="block text-[10px] tracking-[0.2em] uppercase text-gray-500 mb-3">Budget (Optional)</label>
+                        <div className="relative">
+                          <select id="budget" value={formData.budget} onChange={handleChange} className={`w-full bg-black/50 border border-white/[0.05] rounded-none pl-4 pr-10 py-3.5 text-sm focus:outline-none focus:border-white/20 transition-colors appearance-none ${formData.budget ? 'text-white' : 'text-gray-500'}`}>
+                            <option value="" disabled className="bg-[#111] text-gray-500">Select budget...</option>
+                            <option value="Less than $1,000" className="bg-[#111] text-white">Less than $1,000</option>
+                            <option value="$1,000 - $3,000" className="bg-[#111] text-white">$1,000 - $3,000</option>
+                            <option value="$3,000 - $10,000" className="bg-[#111] text-white">$3,000 - $10,000</option>
+                            <option value="$10,000+" className="bg-[#111] text-white">$10,000+</option>
+                          </select>
+                          <svg className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75} aria-hidden="true">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                          </svg>
+                        </div>
                       </div>
                     </div>
 

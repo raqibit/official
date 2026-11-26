@@ -39,6 +39,8 @@ next-env.d.ts
 public/temp/
 
 /src/generated/prisma
+*.db
+*.db-journal
 
 # IDEs and AI Agents
 /.agents/
